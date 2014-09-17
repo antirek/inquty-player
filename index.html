@@ -1,75 +1,88 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <title>Inquty player</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <script src="http://yandex.st/jquery/2.0.0/jquery.js" type="text/javascript"></script>
-        <script type="text/javascript" src="http://cdn.jsdelivr.net/mediaelement/2.11.0/mediaelement-and-player.js"></script>
-        <link type="text/css" rel="stylesheet" href="http://cdn.jsdelivr.net/mediaelement/2.11.0/mediaelementplayer.css" />
-        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <meta charset="utf-8">
+        <title>V234567800 - 06</title>
+        <meta content="width=device-width, initial-scale=0.6" name="viewport">
 
-        <script type="text/javascript" src="mep-feature-playlist/mep-feature-playlist.js"></script>
-        <script type="text/javascript" src="mep-feature-vk/mep-feature-vk.js"></script>
-
-
+        <link rel="stylesheet" href="./includes/index.css" media="screen">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="./audiojs/audio.js"></script>
         <script src="http://vk.com/js/api/openapi.js" type="text/javascript"></script>
+        <script>
 
-        <link type="text/css" rel="stylesheet" href="mep-feature-playlist/mep-feature-playlist.css" />
+
+            var audio = null;
 
 
-        <style>
-            html { 
-                background: url(images/background.jpg) no-repeat center center fixed; 
-                -webkit-background-size: cover;
-                -moz-background-size: cover;
-                -o-background-size: cover;
-                background-size: cover;
+
+            function startPlayer() {
+                // Load in the first track
+                el = $('ol a');
+                first = $('ol a').attr('data-src');
+                $('ol li').first().addClass('playing');
+
+                audioPlay({
+                    src: el.attr('data-src'),
+                    title: el.html(),
+                    id: el.attr('id'),
+                })
+
             }
 
-            body{
 
-                background-color: transparent;
+            function initPlayer() {
+                var a = audiojs.create($('audio'), {
+                    trackEnded: function() {
+                        nextPlay();
+                    }
+                });
+                audio = a[0];
+                bindKeyboard();
             }
 
-        </style>
 
-    </head>
-    <body>
+            function audioPlay(data) {
+                audio.load(data.src);
+                $('#current_audio_info').html(data.title);
+                audio.play();
+                var top = $("#" + data.id).offset().top - 150;
+                $('html, body').animate({
+                    scrollTop: top
+                }, 1500);
+            }
 
-        <div class="container">
-            <div class="row">
+            function bindKeyboard() {
+                // Keyboard shortcuts
+                $(document).keydown(function(e) {
+                    var unicode = e.charCode ? e.charCode : e.keyCode;
+                    // right arrow
+                    if (unicode == 39) {
+                        nextPlay();
+                        // back arrow
+                    } else if (unicode == 37) {
+                        prevPlay();
+                        // spacebar
+                    } else if (unicode == 32) {
+                        audio.playPause();
+                    }
+                });
+            }
+            function prevPlay() {
+                var prev = $('li.playing').prev();
+                if (!prev.length)
+                    prev = $('ol li').last();
+                prev.click();
+            }
 
-                <div class="span3 offset1"> 
-                    <a href="#" onclick="getRecommendAudioList();">Recommend</a><br/>
-                    <a href="#" onclick="getPopularAudioList();">Popular</a><br/>
-                    <a href="#" onclick="getAudioList();">My songs</a><br/><br/>
-                    <input id="search" type="text"><br/>
-                    <a href="#" onclick="search1();">Search</a><br/><br/>
+            function nextPlay() {
+                var next = $('ol li.playing').next();
+                if (!next.length)
+                    next = $('ol li').first();
+                next.click();
 
-                    <div id="albums"></div>
-                    <div id="output"></div>
-                </div>
+            }
 
-                <div class="span6">
-                    <div id="login_button" onclick="VK.Auth.login(authInfo, 8);"></div>
-                    <div id="userinfo"></div>
-
-                    <div id="audioUrl"></div>                 
-                </div>
-                
-
-            </div>
-
-
-        </div>
-
-
-
-
-        <script language="javascript">
-
-            var jk;
-            var current_user_id;
             function authInfo(response) {
                 if (response.session) {
                     $('#login_button').hide();
@@ -81,37 +94,11 @@
                 }
             }
 
-
-            function processData(data) {
-                alert(data);
-            }
-
-            function loadAlbums() {
-
-                VK.api("audio.getAlbums", {
-                    count: 100,
-                    owner_id: current_user_id
-                },
-                function(data) {
-                    if (data.response) {
-                        addAlbumsToPage(data.response);
-                    }
-                });
-            }
-
-            function loadAlbum(album_id) {
-                getAudioList(album_id);
-            }
-
-            function addAlbumsToPage(albums) {
-                for (var i = 0; i < albums.length; i++) {
-                    var a = $('<a></a>', {
-                        text: albums[i].title,
-                        onclick: 'loadAlbum(' + albums[i].album_id + ');',
-                        href: '#'
-                    });
-                    $("#albums").append(a).append('<br/>');
-                }
+            function loadProfile(id) {
+                VK.api("getProfiles",
+                        {uids: id},
+                loadProfileCallback
+                        );
             }
 
             function loadProfileCallback(data) {
@@ -120,153 +107,126 @@
             }
 
             function loadProfile(id) {
+                console.log('Load profile' + id);
                 VK.api("getProfiles",
-                    {uids: id},
-                    loadProfileCallback
-                    );
+                        {uids: id},
+                loadProfileCallback
+                        );
             }
 
             function showProfile(user) {
+                console.log("user show profile" + user);
                 $('#userinfo').html(
-                    "Музыка " +
-                    user.last_name + " " +
-                    user.first_name
-                    );
-            }
+                        "Музыка " +
+                        user.last_name + " " +
+                        user.first_name
+                        );
 
-            function getAudioList(album_id) {
-                album_id = (typeof(album_id) == 'number') ? album_id : '';
-                VK.api("audio.get", {count: 100, album_id: album_id}, function(data) {
-                    if (data.response) {
-                        reloadAudioPlayer(data.response);
-                    }
-                });
+                getRecommendAudioList();
             }
 
             function getRecommendAudioList() {
 
-                var audio = getCurrentAudio();
-                var target_audio = (audio.length > 0) ? audio.attr('oid') + '_' + audio.attr('id') : '';
-                console.log(audio.attr('oid') + '_' + audio.attr('id'));
+                //var audio1 = getCurrentAudio();
+                //var target_audio =  '';//(audio.length > 0) ? audio.attr('oid') + '_' + audio.attr('id') : '';
+                //console.log(audio1.attr('oid') + '_' + audio1.attr('id'));
                 VK.api("audio.getRecommendations", {
                     count: 100,
                     shuffle: 1,
-                    target_audio: target_audio
+                    // target_audio: target_audio
                 }, function(data) {
                     if (data.response) {
-                        reloadAudioPlayer(data.response);
+                        makePlaylist(data.response);
+                        startPlayer();
                     }
                 });
             }
 
-            function getCurrentAudio() {
-                return $("li.current");
-            }
+            //function getCurrentAudio() {
+            //    return $("li.playing");
+            //}
 
-            function search1() {
-
-                var searchword = $('#search').val()
-                getSearchAudioList(searchword);
-            }
-
-            function getSearchAudioList(searchword) {
-
-                VK.api("audio.search", {count: 100, q: searchword}, function(data) {
-                    if (data.response) {
-                        reloadAudioPlayer(data.response);
-                    }
-                });
-            }
-
-            function getPopularAudioList() {
-
-                VK.api("audio.getPopular", {count: 100}, function(data) {
-                    if (data.response) {
-                        reloadAudioPlayer(data.response);
-                    }
-                });
-            }
-
-            function reloadAudioPlayer(array) {
-                initPlayer();
-                makeAudioList(array);
-                loadPlayer();
-            }
-
-            function initPlayer() {
-                var audio = $('<audio></audio>', {
-                    id: 'player',
-                    controls: "controls",
-                });
-                $("#audioUrl").html(audio);
-            }
-
-            function makeAudioList(array) {
+            function makePlaylist(array) {
                 for (var i = 0; i < array.length; i++) {
-                    var source = $('<source />', {
-                        id: array[i].aid,
-                        owner_id: array[i].owner_id,
-                        type: "audio/mpeg",
-                        src: array[i].url,
-                        title: array[i].artist + ' - ' + array[i].title
+                    var anchor = $('<a />', {
+                        'id': array[i].aid,
+                        'owner_id': array[i].owner_id,
+                        'type': "audio/mpeg",
+                        'data-src': array[i].url,
+                        'html': array[i].artist + ' - ' + array[i].title,
+                        'href': '#',
                     });
-                    $("#player").append(source);
+
+                    var playlistItem = $('<li />', {html: anchor});
+
+                    playlistItem.on('click', function(e) {
+                        e.preventDefault();
+                        $(this).addClass('playing').siblings().removeClass('playing');
+
+                        audioPlay({
+                            src: $('a', this).attr('data-src'),
+                            title: $('a', this).html(),
+                            id: $('a', this).attr('id'),
+                        });
+
+                    });
+
+                    $("#playlist").append(playlistItem);
+
                 }
-                jk = source;
             }
 
-            function loadPlayer() {
-                $('audio,video').mediaelementplayer({
-                    audioWidth: 500,
-                    audioHeight: 30,
-                    loop: true,
-                    shuffle: true,
-                    playlist: true,
-                    startVolume: 0.8,
-                    playlistposition: 'bottom',
-                    features: [
-                        'playlistfeature',
-                        'prevtrack',
-                        'playpause',
-                        'nexttrack',
-                        'loop',
-                        'shuffle',
-                        'playlist',
-                        'current',
-                        'progress',
-                        'duration',
-                        'volume',
-                        'vk'
-                    ],
-                    success: function(mediaElement, domObject) {
-                        mediaElement.play();
-
-                        mediaElement.addEventListener('pause', function(e) {
-
-                            console.log('pause');
-
-                        }, false);
-                        mediaElement.addEventListener('play', function(e) {
-
-                            console.log('play');
-
-                        }, false);
-                    },
+            $(function() {
+                VK.init({
+                    apiId: 3668304
                 });
-            }
+                VK.Auth.getLoginStatus(authInfo);
+                VK.UI.button('login_button');
+                initPlayer();
 
+                $(document).on('scroll', function() {
+                    if ($('#bar')[0].offsetTop < $(document).scrollTop()) {
+                        $("#bar").css({position: "fixed", top: 0});
+                    }
+                    if ($(document).scrollTop() < $("#position-saver")[0].offsetTop) {
+                        $("#bar").css({position: "static", top: 0});
+                    }
+                });
 
-            VK.init({
-                apiId: 3668304
             });
 
-            VK.Auth.getLoginStatus(authInfo);
-            VK.UI.button('login_button');
-
-            getRecommendAudioList();
-            loadAlbums();
-
         </script>
+    </head>
+    <body>
+        <div id="login_button" onclick="VK.Auth.login(authInfo, 8);"></div>
+        <div id="userinfo"></div>
+
+
+        <div id="wrapper">
+
+
+
+            <div id='position-saver'>
+                <div id='bar'>
+
+                    <div id="current_audio_info"></div>
+
+                    <audio preload id="player"></audio>
+
+                    <div id="buttons">
+                        <a href="#" id="prev" onclick="prevPlay();">prev</a> 
+                        <a href="#" id="next" onclick="nextPlay();">next</a>
+                    </div>
+                </div>
+            </div>
+
+            <ol id="playlist">
+
+            </ol>
+
+
+
+        </div>
 
     </body>
 </html>
