@@ -1,0 +1,21 @@
+{
+  "name": "inquty-player",
+  "version": "0.0.1",
+  "homepage": "https://github.com/antirek/inquty-player",
+  "authors": [
+    "sergey <serge.dmitriev@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "lib",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "audiojs": "*",
+    "jquery": "~2.1.1"
+  }
+}

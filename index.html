@@ -1,20 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>V234567800 - 06</title>
+<html>
+    <head>        
+        <title>Inquty player</title>
+
         <meta content="width=device-width, initial-scale=0.6" name="viewport">
 
-        <link rel="stylesheet" href="./includes/index.css" media="screen">
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-        <script src="./audiojs/audio.js"></script>
+        <link rel="stylesheet" href="includes/index.css" media="screen">
+        
+        <script src="lib/jquery/dist/jquery.js"></script>
+        <script src="lib/audiojs/audiojs/audio.js"></script>
+
         <script src="http://vk.com/js/api/openapi.js" type="text/javascript"></script>
         <script>
 
-
             var audio = null;
-
-
 
             function startPlayer() {
                 // Load in the first track
@@ -197,14 +196,13 @@
 
         </script>
     </head>
+
     <body>
         <div id="login_button" onclick="VK.Auth.login(authInfo, 8);"></div>
         <div id="userinfo"></div>
 
 
         <div id="wrapper">
-
-
 
             <div id='position-saver'>
                 <div id='bar'>

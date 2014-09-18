@@ -1,0 +1,19 @@
+{
+  "name": "inquty-player",
+  "version": "1.0.0",
+  "description": "inquty-player =============",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antirek/inquty-player.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/antirek/inquty-player/issues"
+  },
+  "homepage": "https://github.com/antirek/inquty-player"
+}
