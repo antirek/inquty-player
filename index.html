@@ -6,7 +6,7 @@
         <meta content="width=device-width, initial-scale=0.5" name="viewport">
 
         <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" media="screen">
-        
+
         <link rel="stylesheet" href="includes/index.css" media="screen">
         
         <script src="lib/jquery/dist/jquery.js"></script>
@@ -20,7 +20,11 @@
 
     <body>
 
-        <div id="login_button" onclick="VK.Auth.login(authInfo, 8);"></div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6 .col-md-offset-4"> 
+    
+<div id="login_button" onclick="VK.Auth.login(authInfo, 8);"></div>        
         <div id="userinfo"></div>
 
         <div id="wrapper">
@@ -43,6 +47,13 @@
 
             </ol>
 
+        </div>
+
+
+
+
+            </div>
+        </div>
         </div>
 
     </body>

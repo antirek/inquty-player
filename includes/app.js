@@ -91,13 +91,6 @@ function loadProfileCallback(data) {
     showProfile(profile);
 }
 
-function loadProfile(id) {
-    console.log('Load profile' + id);
-    VK.api("getProfiles",
-        {uids: id},
-        loadProfileCallback
-        );
-}
 
 function showProfile(user) {
     console.log("user show profile" + user);
@@ -162,11 +155,14 @@ function makePlaylist(array) {
 }
 
 $(function() {
+    
     VK.init({
         apiId: 3668304
     });
+
     VK.Auth.getLoginStatus(authInfo);
     VK.UI.button('login_button');
+    
     initPlayer();
 
     $(document).on('scroll', function() {
