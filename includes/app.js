@@ -1,6 +1,38 @@
 
 var audio = null;
 
+
+
+var Player = function(){
+
+}
+
+
+var Playlist = function(){
+    var items = [];
+    var current = -1;
+
+    var addItem = function(item){
+        items.push(item);
+    }
+
+    var getNext = function(){
+        current = current + 1;
+        return (items.length > current) ? items[current] : null;
+    }
+
+    return {
+        addItem: addItem,
+        getNext: getNext
+    }
+}
+
+
+var playlist = Playlist();
+playlist.addItem({title:'hello'});
+console.log(playlist.getNext());
+
+
 function startPlayer() {
 
     el = $('ol a');
@@ -23,7 +55,6 @@ function initPlayer() {
         }
     });
     audio = a[0];
-    bindKeyboard();
 }
 
 
@@ -31,28 +62,13 @@ function audioPlay(data) {
     audio.load(data.src);
     $('#current_audio_info').html(data.title);
     audio.play();
+
     var top = $("#" + data.id).offset().top - 150;
     $('html, body').animate({
         scrollTop: top
     }, 1500);
 }
 
-function bindKeyboard() {
-    // Keyboard shortcuts
-    $(document).keydown(function(e) {
-        var unicode = e.charCode ? e.charCode : e.keyCode;
-        // right arrow
-        if (unicode == 39) {
-            nextPlay();
-            // back arrow
-        } else if (unicode == 37) {
-            prevPlay();
-            // spacebar
-        } else if (unicode == 32) {
-            audio.playPause();
-        }
-    });
-}
 function prevPlay() {
     var prev = $('li.playing').prev();
     if (!prev.length)
@@ -119,10 +135,6 @@ function getRecommendAudioList() {
         }
     });
 }
-
-//function getCurrentAudio() {
-//    return $("li.playing");
-//}
 
 function makePlaylist(array) {
     for (var i = 0; i < array.length; i++) {
