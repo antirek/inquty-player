@@ -1,9 +1,8 @@
 
 var audio = null;
 
-
-
 var Player = function(){
+    var state = 'stop';
 
 }
 
@@ -16,21 +15,76 @@ var Playlist = function(){
         items.push(item);
     }
 
+    var addItems = function(items){
+        for (var i = 0; i < items.length; i++) {
+            addItem(items[i]);
+        };
+    }
+
     var getNext = function(){
         current = current + 1;
         return (items.length > current) ? items[current] : null;
     }
 
+    var getById = function(id){
+        return items[id];
+    }
+
+    var getItems = function(){
+        console.log(items);
+    }
+
+    var renderItem = function(item){
+        var anchor = $('<a />', {
+            'id': item.aid,
+            'owner_id': item.owner_id,
+            'type': "audio/mpeg",
+            'data-src': item.url,
+            'html': item.artist + ' - ' + item.title,
+            'href': '#',
+        });
+
+        var li = $('<li />', {
+            html: anchor
+        });
+
+        li.on('click', function(e) {
+            e.preventDefault();
+            $(this).addClass('playing').siblings().removeClass('playing');
+
+            audioPlay({
+                src: $('a', this).attr('data-src'),
+                title: $('a', this).html(),
+                id: $('a', this).attr('id'),
+            });
+
+        });
+
+        return li;
+    }
+
+    var render = function(){
+        var ul = $('<ul>');
+        
+        for (var i = 0; i < items.length; i++) {
+            ul.append(renderItem(items[i]));
+        }
+
+        return ul;
+    }
+
     return {
         addItem: addItem,
-        getNext: getNext
+        addItems: addItems,
+        getNext: getNext,
+        getById: getById,
+        getItems: getItems,
+        render: render
     }
 }
 
 
 var playlist = Playlist();
-playlist.addItem({title:'hello'});
-console.log(playlist.getNext());
 
 
 function startPlayer() {
@@ -137,33 +191,9 @@ function getRecommendAudioList() {
 }
 
 function makePlaylist(array) {
-    for (var i = 0; i < array.length; i++) {
-        var anchor = $('<a />', {
-            'id': array[i].aid,
-            'owner_id': array[i].owner_id,
-            'type': "audio/mpeg",
-            'data-src': array[i].url,
-            'html': array[i].artist + ' - ' + array[i].title,
-            'href': '#',
-        });
 
-        var playlistItem = $('<li />', {html: anchor});
-
-        playlistItem.on('click', function(e) {
-            e.preventDefault();
-            $(this).addClass('playing').siblings().removeClass('playing');
-
-            audioPlay({
-                src: $('a', this).attr('data-src'),
-                title: $('a', this).html(),
-                id: $('a', this).attr('id'),
-            });
-
-        });
-
-        $("#playlist").append(playlistItem);
-
-    }
+    playlist.addItems(array);    
+    $('#playlist').append(playlist.render());
 }
 
 $(function() {
@@ -175,15 +205,6 @@ $(function() {
     VK.Auth.getLoginStatus(authInfo);
     VK.UI.button('login_button');
     
-    initPlayer();
-
-    $(document).on('scroll', function() {
-        if ($('#bar')[0].offsetTop < $(document).scrollTop()) {
-            $("#bar").css({position: "fixed", top: 0});
-        }
-        if ($(document).scrollTop() < $("#position-saver")[0].offsetTop) {
-            $("#bar").css({position: "static", top: 0});
-        }
-    });
+    initPlayer();    
 
 });
