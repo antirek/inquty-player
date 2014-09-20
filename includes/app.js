@@ -44,6 +44,7 @@ var Player = function(){
             });
 
             var li = $('<li />', {
+                class: 'list-group-item',
                 html: anchor
             });
 
@@ -60,7 +61,7 @@ var Player = function(){
         }
 
         var render = function(){
-            var ul = $('<ul>');
+            var ul = $('<ul>',{class:'list-group nav2'});
             
             for (var i = 0; i < items.length; i++) {
                 ul.append(renderItem(items[i]));
@@ -105,11 +106,15 @@ var Player = function(){
         nextPlay();
     };
 
+    var addItems = function(items){
+        playlist.addItems(items);
+        $('#playlist').append(playlist.render());
+    }
+
     
     return {
         audioPlay: audioPlay,
-        addItems: playlist.addItems,
-        renderPlaylist: playlist.render,
+        addItems: addItems,        
         initPlayer: initPlayer,
         nextPlay: nextPlay
     }
@@ -186,8 +191,7 @@ $(function() {
     vki.auth(function(){
         vki.loadPlaylist(function (array) {
             player.addItems(array);
-            $('#playlist').append(player.renderPlaylist());
-            player.initPlayer();            
+            player.initPlayer();
         });
     });
 
