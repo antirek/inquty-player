@@ -6,13 +6,13 @@ var canvas_context = null;
 
 function update() {
       // This graph has 30 bars.      
-      var num_bars = 32;
+      var num_bars = 48;
       // Get the frequency-domain data
       var data = new Uint8Array(2048);
       analyser.getByteFrequencyData(data);
       
       // Clear the canvas
-      canvas_context.clearRect(0, 0, 400, 150);
+      canvas_context.clearRect(0, 0, canvas.width, canvas.height);
 
       // Break the samples up into bins
       var bin_size = Math.floor(400 / num_bars);
@@ -38,6 +38,7 @@ var Player = function(){
 
     var Audio = function(){
         var init = function(){
+            var player = document.getElementById('player');
             var a = audiojs.create($('#player'));
             
             window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -81,6 +82,12 @@ var Player = function(){
         }    
 
         var renderItem = function(item){
+
+            var span = $('<span>',{
+                class:'badge',
+                html: item.duration
+            });
+
             var anchor = $('<a />', {
                 'id': item.aid,
                 'owner_id': item.owner_id,
@@ -90,8 +97,10 @@ var Player = function(){
                 'href': '#',
             });
 
+            anchor.append(span);
+
             var li = $('<li />', {
-                class: 'list-group-item',
+                class: 'list-group-item disabled',
                 html: anchor
             });
 

@@ -2,8 +2,26 @@
 <html>
     <head>        
         <title>Inquty player</title>
-
         <meta content="width=device-width, initial-scale=0.5" name="viewport">
+
+        <style type="text/css">
+            .nav2{
+                max-height: 300px;
+                overflow-y:scroll;                 
+            }
+            body { 
+                background: url('includes/background.jpg') no-repeat center center fixed; 
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                -o-background-size: cover;
+                background-size: cover;
+            }
+            @media (min-width: 568px) {
+              .container {
+                max-width: 530px;
+              }
+            }
+        </style>
 
         <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" media="screen">
         
@@ -14,31 +32,33 @@
         <script src="http://vk.com/js/api/openapi.js"></script>
 
         <script src="includes/app.js"></script>
-        <style type="text/css">
-
-            .nav2{
-                max-height: 300px;
-                overflow-y:scroll; 
-            }
         
-        </style>
     </head>
 
-    <body style="background-color: #EFEFEF;">
-        <canvas width="400" height="120" id="canvas" ></canvas>
-        <div class="container-fluid">
+    <body>
+        
+        <div class="container">
             <div class="row">
-                <div class="col-md-5 .col-md-offset-4"> 
-
-
-    
+                <div class="col-md-6">
+                    <h2>inquty</h2>
+                </div>
+                <div class="col-md-6">
                     <div id="login_button" onclick="VK.Auth.login(authInfo, 8);"></div>        
                     <div id="userinfo"></div>
+                </div>
+            </div>
 
+            <div class="row">
+                <div class="col-md-12">
+                    <canvas width="500" height="120" id="canvas" ></canvas>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
                     <audio preload id="player"></audio>
 
                     <div id="playlist"></div>
-
                 </div>
             </div>
         </div>
