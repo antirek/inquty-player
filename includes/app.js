@@ -1,11 +1,58 @@
+var analyser = null;
+
+var canvas = null;
+var canvas_context = null;
+
+
+function update() {
+      // This graph has 30 bars.      
+      var num_bars = 32;
+      // Get the frequency-domain data
+      var data = new Uint8Array(2048);
+      analyser.getByteFrequencyData(data);
+      
+      // Clear the canvas
+      canvas_context.clearRect(0, 0, 400, 150);
+
+      // Break the samples up into bins
+      var bin_size = Math.floor(400 / num_bars);
+      for (var i=0; i < num_bars; ++i) {
+        var sum = 0;
+        for (var j=0; j < bin_size; ++j) {
+          sum += data[(i * bin_size) + j];
+        }
+
+        // Calculate the average frequency of the samples in the bin
+        var average = sum / bin_size;
+
+        // Draw the bars on the canvas
+        var bar_width = canvas.width / num_bars;
+        var scaled_average = (average / 256) * canvas.height;
+
+        canvas_context.fillRect(i * bar_width, canvas.height, bar_width - 2,
+                             -scaled_average);
+    }
+  }
 
 var Player = function(){
 
     var Audio = function(){
         var init = function(){
             var a = audiojs.create($('#player'));
+            
+            window.AudioContext = window.AudioContext || window.webkitAudioContext;
+            //var context = new window.webkitAudioContext();
+            var context = new AudioContext();
+            var player = document.getElementById('player');
+            var source = context.createMediaElementSource(player);
+            analyser = context.createAnalyser();
+            source.connect(analyser);
+            analyser.connect(context.destination);
+            window.setInterval(update, 20);
             return a[0];
         }
+
+
         return init();
     }
 
@@ -184,6 +231,8 @@ var vk = function(){
 
 $(function() {
 
+    canvas = document.getElementById("canvas");
+    canvas_context = canvas.getContext("2d");
     var vki = vk();
     var player = Player();
     
