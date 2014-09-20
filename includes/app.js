@@ -81,7 +81,7 @@ var Player = function(){
 
 
     var playlist = Playlist();
-    var audio = null;
+    var audio = Audio();
 
 
     var nextPlay = function() {
@@ -98,8 +98,7 @@ var Player = function(){
     }
 
 
-    var initPlayer = function() {
-        audio = Audio();        
+    var initPlayer = function() {  
         audio.trackEnded = function() {
             nextPlay();
         };
