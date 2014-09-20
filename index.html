@@ -6,8 +6,6 @@
         <meta content="width=device-width, initial-scale=0.5" name="viewport">
 
         <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" media="screen">
-
-        <link rel="stylesheet" href="includes/index.css" media="screen">
         
         <script src="lib/jquery/dist/jquery.js"></script>
         <script src="lib/audiojs/audiojs/audio.js"></script>
@@ -24,36 +22,17 @@
             <div class="row">
                 <div class="col-md-6 .col-md-offset-4"> 
     
-<div id="login_button" onclick="VK.Auth.login(authInfo, 8);"></div>        
-        <div id="userinfo"></div>
+                    <div id="login_button" onclick="VK.Auth.login(authInfo, 8);"></div>        
+                    <div id="userinfo"></div>
 
-        <div id="wrapper">
-
-            <div id='position-saver'>
-                <div id='bar'>
-
-                    <div id="current_audio_info"></div>
-
+                   
                     <audio preload id="player"></audio>
 
-                    <div id="buttons">
-                        <a href="#" id="prev" onclick="prevPlay();">prev</a> 
-                        <a href="#" id="next" onclick="nextPlay();">next</a>
-                    </div>
+                    <div id="playlist"></div>
+
+
                 </div>
             </div>
-
-            <ol id="playlist">
-
-            </ol>
-
-        </div>
-
-
-
-
-            </div>
-        </div>
         </div>
 
     </body>

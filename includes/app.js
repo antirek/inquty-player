@@ -1,9 +1,10 @@
 
-var audio = null;
-
 var Player = function(){
-    var state = 'stop';
-
+    var init = function(){
+        var a = audiojs.create($('#player'));
+        return a[0];
+    }
+    return init();
 }
 
 
@@ -28,11 +29,7 @@ var Playlist = function(){
 
     var getById = function(id){
         return items[id];
-    }
-
-    var getItems = function(){
-        console.log(items);
-    }
+    }    
 
     var renderItem = function(item){
         var anchor = $('<a />', {
@@ -49,13 +46,10 @@ var Playlist = function(){
         });
 
         li.on('click', function(e) {
-            e.preventDefault();
-            $(this).addClass('playing').siblings().removeClass('playing');
+            e.preventDefault();            
 
             audioPlay({
-                src: $('a', this).attr('data-src'),
-                title: $('a', this).html(),
-                id: $('a', this).attr('id'),
+                src: $('a', this).attr('data-src')          
             });
 
         });
@@ -77,77 +71,50 @@ var Playlist = function(){
         addItem: addItem,
         addItems: addItems,
         getNext: getNext,
-        getById: getById,
-        getItems: getItems,
+        getById: getById,        
         render: render
     }
 }
 
 
 var playlist = Playlist();
+var player = null;
 
 
-function startPlayer() {
-
-    el = $('ol a');
-    first = $('ol a').attr('data-src');
-    $('ol li').first().addClass('playing');
-
+function nextPlay() {
+    var item = playlist.getNext();
     audioPlay({
-        src: el.attr('data-src'),
-        title: el.html(),
-        id: el.attr('id'),
+        src: item.url
     })
-
 }
 
 
 function initPlayer() {
-    var a = audiojs.create($('audio'), {
-        trackEnded: function() {
+    player = Player();
+    
+    player.trackEnded = function() {
             nextPlay();
-        }
-    });
-    audio = a[0];
+        };
+    nextPlay();
 }
 
 
 function audioPlay(data) {
-    audio.load(data.src);
-    $('#current_audio_info').html(data.title);
-    audio.play();
-
-    var top = $("#" + data.id).offset().top - 150;
-    $('html, body').animate({
-        scrollTop: top
-    }, 1500);
+    player.load(data.src);
+    player.play();
 }
 
-function prevPlay() {
-    var prev = $('li.playing').prev();
-    if (!prev.length)
-        prev = $('ol li').last();
-    prev.click();
-}
-
-function nextPlay() {
-    var next = $('ol li.playing').next();
-    if (!next.length)
-        next = $('ol li').first();
-    next.click();
-
-}
 
 function authInfo(response) {
     if (response.session) {
         $('#login_button').hide();
         current_user_id = response.session.mid;
         loadProfile(response.session.mid);
-        console.log(response.session.mid);
     } else {
         $('#login_button').show();
     }
 }
+
 
 function loadProfile(id) {
     VK.api("getProfiles",
@@ -156,6 +123,7 @@ function loadProfile(id) {
         );
 }
 
+
 function loadProfileCallback(data) {
     var profile = data.response[0];
     showProfile(profile);
@@ -163,7 +131,6 @@ function loadProfileCallback(data) {
 
 
 function showProfile(user) {
-    console.log("user show profile" + user);
     $('#userinfo').html(
         "Музыка " +
         user.last_name + " " +
@@ -173,22 +140,20 @@ function showProfile(user) {
     getRecommendAudioList();
 }
 
-function getRecommendAudioList() {
 
-    //var audio1 = getCurrentAudio();
-    //var target_audio =  '';//(audio.length > 0) ? audio.attr('oid') + '_' + audio.attr('id') : '';
-    //console.log(audio1.attr('oid') + '_' + audio1.attr('id'));
+function getRecommendAudioList() {
+    
     VK.api("audio.getRecommendations", {
         count: 100,
         shuffle: 1,
-        // target_audio: target_audio
     }, function(data) {
         if (data.response) {
             makePlaylist(data.response);
-            startPlayer();
+            nextPlay();
         }
     });
 }
+
 
 function makePlaylist(array) {
 
@@ -196,8 +161,8 @@ function makePlaylist(array) {
     $('#playlist').append(playlist.render());
 }
 
-$(function() {
-    
+
+$(function() {  
     VK.init({
         apiId: 3668304
     });
@@ -205,6 +170,5 @@ $(function() {
     VK.Auth.getLoginStatus(authInfo);
     VK.UI.button('login_button');
     
-    initPlayer();    
-
+    initPlayer();
 });
