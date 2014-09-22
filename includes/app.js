@@ -2,10 +2,12 @@
 var Player = function(){
 
     var Audio = function(){
+
         var init = function(){            
             var a = audiojs.create($('#player'));
             return a[0];
         }
+        
         return init();
     }
 
@@ -196,6 +198,7 @@ var Player = function(){
     }
 }
 
+
 var vk = function(){
 
     var auth = function(callback){
@@ -270,5 +273,15 @@ $(function() {
             player.initPlayer();
         });
     });
+
+
+
+    var images = [  '1.jpg', '2.jpg', '3.jpg',
+                    '4.jpg', '5.jpg', '6.jpg',
+                    '7.jpg', '8.jpg', '9.jpg' ];
+
+    var image = images[Math.floor(Math.random()*images.length)];
+
+    $('body').css('background','url(/includes/images/' + image + ')');
 
 });
