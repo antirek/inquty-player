@@ -67,13 +67,7 @@ var Player = function(){
 
     var Playlist = function(){
         var items = {};
-        var current = null;
-
-        var init = function(){
-            $('#togglePlaylist').on('click',function(){
-                $('#playlist').toggle();
-            });
-        }();
+        var current = null;        
 
         var addItem = function(item){
             items[item.aid] = item;
@@ -89,18 +83,26 @@ var Player = function(){
             return items[current];
         }
 
-        var getNext = function(){
+        var setCurrent = function(item){
+            current = item.aid;
+        }
+
+        var getNext = function(){            
+            var index = 0;          
             var keys = Object.keys(items);
             if(!current){
-                current = keys[0];
-            }else{
-                for(var i = 0; i < keys.length - 1; i++){
-                    if(keys[i] === current){
-                        current = keys[i+1];
-                    }
+                index = keys[0];
+            }else{                
+                var j = 0;
+                for(var i = 0; i < keys.length - 1; i++){                    
+                    if(parseInt(keys[i]) === parseInt(current)){
+                        j = i;                        
+                    }                    
                 }
-            }
-            return items[current];
+                index = keys[j + 1];
+            }            
+            current = index;
+            return items[index];
         }
 
         var getById = function(id){
@@ -154,7 +156,8 @@ var Player = function(){
             addItems: addItems,
             getNext: getNext,
             getById: getById,        
-            render: render
+            render: render,
+            setCurrent: setCurrent,
         }
     }
 
@@ -165,22 +168,37 @@ var Player = function(){
 
 
     var nextPlay = function() {
-        var item = playlist.getNext();
+        var item = playlist.getNext();        
         audioPlay(item)
     }
 
 
     var audioPlay = function(item) {
+        playlist.setCurrent(item);
         audio.load(item.url);
         audio.play();
         $('#info').html(item.artist + ' - ' + item.title);
     }
 
 
-    var initPlayer = function() {  
+    var initPlayer = function() {
+        
+        var bindButtons = function(){
+            
+            $('#togglePlaylist').on('click',function(){
+                $('#playlist').toggle();
+            });
+            
+            $('#next').on('click',function(){
+                nextPlay();
+            });
+
+        }();
+
         audio.trackEnded = function() {
             nextPlay();
         };
+
         nextPlay();
     };
 
