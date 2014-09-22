@@ -67,6 +67,12 @@ var Player = function(){
         var items = [];
         var current = -1;
 
+        var init = function(){
+            $('#togglePlaylist').on('click',function(){
+                $('#playlist').toggle();
+            });
+        }();
+
         var addItem = function(item){
             items.push(item);
         }
@@ -84,7 +90,7 @@ var Player = function(){
 
         var getById = function(id){
             return items[id];
-        }    
+        }  
 
         var renderItem = function(item){
 
