@@ -1,0 +1,36 @@
+.nav2 {
+  max-height: 400px;
+  overflow-y:scroll;                 
+}
+
+body { 
+  background: url('background.jpg') no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+@media (min-width: 568px) {
+  .container {
+    max-width: 530px;
+  }
+}
+
+.track-details { 
+  clear: both; 
+  height: 20px; 
+  width: 448px; 
+  padding: 1px 6px; 
+  background: #eee; 
+  color: #222; 
+  font-family: monospace; 
+  font-size: 11px; 
+  line-height: 20px;
+  -webkit-box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.15); 
+  -moz-box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.15); 
+}
+
+.track-details:before { content: '♬ '; }
+
+.track-details em { font-style: normal; color: #999; }

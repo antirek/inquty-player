@@ -4,35 +4,16 @@
         <title>Inquty player</title>
         <meta content="width=device-width, initial-scale=0.5" name="viewport">
 
-        <style type="text/css">
-            .nav2{
-                max-height: 400px;
-                overflow-y:scroll;                 
-            }
-            body { 
-                background: url('includes/background.jpg') no-repeat center center fixed; 
-                -webkit-background-size: cover;
-                -moz-background-size: cover;
-                -o-background-size: cover;
-                background-size: cover;
-            }
-            @media (min-width: 568px) {
-              .container {
-                max-width: 530px;
-              }
-            }
-        </style>
+        <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" media="screen" />
+        <link rel="stylesheet" href="includes/style.css" />
 
-        <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" media="screen">
-        
         <script src="lib/jquery/dist/jquery.js"></script>
         <script src="lib/audiojs/audiojs/audio.js"></script>
         <script src="lib/bootstrap/dist/js/bootstrap.js"></script>
 
         <script src="http://vk.com/js/api/openapi.js"></script>
 
-        <script src="includes/app.js"></script>
-        
+        <script src="includes/app.js"></script>        
     </head>
 
     <body>
@@ -67,7 +48,8 @@
             
             <div class="row">
                 <div class="col-md-12">
-                    <audio preload id="player"></audio>                    
+                    <audio preload id="player"></audio>
+                    <div id="info" class="track-details"></div>
                 </div>
             </div>
         </div>

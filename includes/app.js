@@ -64,8 +64,8 @@ var Player = function(){
 
 
     var Playlist = function(){
-        var items = [];
-        var current = -1;
+        var items = {};
+        var current = null;
 
         var init = function(){
             $('#togglePlaylist').on('click',function(){
@@ -74,18 +74,31 @@ var Player = function(){
         }();
 
         var addItem = function(item){
-            items.push(item);
+            items[item.aid] = item;
         }
 
         var addItems = function(items){
-            for (var i = 0; i < items.length; i++) {
-                addItem(items[i]);
+            for (key in items) {
+                addItem(items[key]);
             };            
         }
 
+        var getCurrent = function(){
+            return items[current];
+        }
+
         var getNext = function(){
-            current = current + 1;
-            return (items.length > current) ? items[current] : null;
+            var keys = Object.keys(items);
+            if(!current){
+                current = keys[0];
+            }else{
+                for(var i = 0; i < keys.length - 1; i++){
+                    if(keys[i] === current){
+                        current = keys[i+1];
+                    }
+                }
+            }
+            return items[current];
         }
 
         var getById = function(id){
@@ -95,12 +108,12 @@ var Player = function(){
         var renderItem = function(item){
 
             var span = $('<span>',{
-                class:'badge',
+                class: 'badge',
                 html: item.duration
             });
 
             var anchor = $('<a />', {
-                'id': item.aid,
+                'aid': item.aid,
                 'owner_id': item.owner_id,
                 'type': "audio/mpeg",
                 'data-src': item.url,
@@ -116,12 +129,9 @@ var Player = function(){
             });
 
             li.on('click', function(e) {
-                e.preventDefault();            
-
-                audioPlay({
-                    src: $('a', this).attr('data-src')          
-                });
-
+                e.preventDefault();
+                var aid = $('a', this).attr('aid');
+                audioPlay(items[aid]);
             });
 
             return li;
@@ -130,8 +140,8 @@ var Player = function(){
         var render = function(){
             var ul = $('<ul>',{class:'list-group nav2'});
             
-            for (var i = 0; i < items.length; i++) {
-                ul.append(renderItem(items[i]));
+            for (key in items) {
+                ul.append(renderItem(items[key]));
             }
 
             return ul;
@@ -154,15 +164,14 @@ var Player = function(){
 
     var nextPlay = function() {
         var item = playlist.getNext();
-        audioPlay({
-            src: item.url
-        })
+        audioPlay(item)
     }
 
 
-    var audioPlay = function(data) {
-        audio.load(data.src);
+    var audioPlay = function(item) {
+        audio.load(item.url);
         audio.play();
+        $('#info').html(item.artist + ' - ' + item.title);
     }
 
 
