@@ -300,6 +300,6 @@ $(function() {
 
     var image = images[Math.floor(Math.random()*images.length)];
 
-    $('body').css('background','url(/includes/images/' + image + ')');
+    $('body').css('background','url(includes/images/' + image + ')');
 
 });
