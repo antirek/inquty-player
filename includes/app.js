@@ -17,19 +17,22 @@ var Player = function(){
 
         var init = function(){
             var player = document.getElementById('player');
+
             window.AudioContext = window.AudioContext || window.webkitAudioContext;            
-            var context = new AudioContext();
-            var player = document.getElementById('player');
-            var source = context.createMediaElementSource(player);
-            analyser = context.createAnalyser();
+            var audioContext = new AudioContext();
+            var source = audioContext.createMediaElementSource(player);
+            
+            analyser = audioContext.createAnalyser();
             source.connect(analyser);
-            analyser.connect(context.destination);
-            //window.setInterval(update, 20);
+            analyser.connect(audioContext.destination);
+
+            canvasContext.globalAlpha = 0.9;
+            canvasContext.fillStyle = "black";
+            
             update();
         };
 
-        var update = function() {
-              
+        var update = function(){
             var num_bars = 48;
             
             var data = new Uint8Array(2048);
@@ -44,17 +47,16 @@ var Player = function(){
                 for (var j = 0; j < bin_size; ++j) {
                     sum += data[(i * bin_size) + j];
                 }
-
-                // Calculate the average frequency of the samples in the bin
+                
                 var average = sum / bin_size;
-
-                // Draw the bars on the canvas
                 var bar_width = canvas.width / num_bars;
                 var scaled_average = (average / 256) * canvas.height;
-                canvasContext.fillRect(i * bar_width, canvas.height, bar_width - 2,
-                                     -scaled_average);
+                
+                canvasContext.fillRect(i * bar_width, 
+                    canvas.height, bar_width - 2, -scaled_average);
             }
-            requestAnimationFrame( update );
+
+            requestAnimationFrame(update);
         }
 
         init();
