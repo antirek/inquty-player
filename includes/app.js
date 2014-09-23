@@ -70,13 +70,22 @@ var Player = function(){
         var current = null;        
 
         var addItem = function(item){
-            items[item.aid] = item;
+            if(item.aid){
+                items[item.aid] = item;
+            }
         }
 
-        var addItems = function(items){
-            for (key in items) {
-                addItem(items[key]);
-            };            
+        var addItems = function(itemos){
+            var keys = Object.keys(itemos);
+            for (var i = keys.length - 1; i >= 0; i--) {
+                addItem(itemos[keys[i]]);
+            };
+            console.log(items);      
+        }
+
+        var removeItems = function(){
+            current = null;
+            items = {};
         }
 
         var getCurrent = function(){
@@ -85,6 +94,9 @@ var Player = function(){
 
         var setCurrent = function(item){
             current = item.aid;
+
+            $('#playlist a').removeClass('active');            
+            $('#playlist a[aid='+current+']').addClass('active');
         }
 
         var getNext = function(){            
@@ -107,13 +119,20 @@ var Player = function(){
 
         var getById = function(id){
             return items[id];
-        }  
+        }
+
+        var formatSeconds = function(secs){
+            var minutes = Math.floor(secs / 60);
+            var seconds = secs - minutes * 60;
+            seconds = (seconds > 9) ? seconds : '0'+seconds;
+            return minutes + ':' + seconds;
+        }
 
         var renderItem = function(item){
 
             var span = $('<span>',{
-                class: 'badge',
-                html: item.duration
+                class: 'badge pull-right',
+                html: formatSeconds(item.duration)
             });
 
             var anchor = $('<a />', {
@@ -142,9 +161,11 @@ var Player = function(){
         }
 
         var render = function(){
-            var ul = $('<ul>',{class:'list-group nav2'});
+            var ul = $('<ul>', {
+                class: 'list-group nav2'
+            });            
             
-            for (key in items) {
+            for (key in items){ 
                 ul.append(renderItem(items[key]));
             }
 
@@ -154,6 +175,7 @@ var Player = function(){
         return {
             addItem: addItem,
             addItems: addItems,
+            removeItems: removeItems,
             getNext: getNext,
             getById: getById,        
             render: render,
@@ -203,8 +225,9 @@ var Player = function(){
     };
 
     var addItems = function(items){
+        playlist.removeItems();        
         playlist.addItems(items);
-        $('#playlist').append(playlist.render());
+        $('#playlist').html(playlist.render());
     }
 
     
@@ -219,6 +242,8 @@ var Player = function(){
 
 var vk = function(){
 
+    var userid = null;   
+
     var auth = function(callback){
 
         VK.init({
@@ -231,7 +256,7 @@ var vk = function(){
         function authInfo(response) {
             if (response.session) {
                 $('#login_button').hide();
-                current_user_id = response.session.mid;
+                userid = response.session.mid;           
                 loadProfile(response.session.mid);
             } else {
                 $('#login_button').show();
@@ -243,7 +268,7 @@ var vk = function(){
             VK.api("getProfiles",
                 {uids: id},
                 loadProfileCallback
-                );
+            );
         }
 
 
@@ -272,9 +297,45 @@ var vk = function(){
         });
     }
 
+    var getPopularAudioList = function(callback) {
+        VK.api("audio.getPopular", {
+            count: 100,
+            shuffle: 1,
+        }, function(data) {
+            if (data.response) {
+                callback(data.response);
+            }
+        });
+    }
+
+    var getUserAudioList = function(callback){
+        VK.api("audio.get", {
+            count: 100,
+            owner_id: userid,
+        }, function(data) {
+            if (data.response) {
+                callback(data.response);
+            }
+        });
+    }
+
+    var loadPlaylist = function(type, callback){
+        switch(type){            
+            case 'user':
+                getUserAudioList(callback);
+                break;
+            case 'popular':
+                getPopularAudioList(callback);
+                break;
+            case 'recommendations':                
+            default:
+                getRecommendAudioList(callback);
+        }
+    }
+
     return {
         auth: auth,
-        loadPlaylist: getRecommendAudioList,
+        loadPlaylist: loadPlaylist,
     }
 }
 
@@ -286,11 +347,37 @@ $(function() {
     var player = Player();
     
     vki.auth(function(){
-        vki.loadPlaylist(function (array) {
-            player.addItems(array);
+        vki.loadPlaylist('recommendations', function (items) {
+            player.addItems(items);
             player.initPlayer();
         });
     });
+
+
+    var bindSelectPlaylists = function(){
+
+        $('#selectPlaylistRecommendations').on('click', function(){
+            vki.loadPlaylist('recommendations', function(items){
+                player.addItems(items);
+                player.nextPlay();
+            });
+        });
+
+        $('#selectPlaylistPopular').on('click', function(){
+            vki.loadPlaylist('popular', function(items){                
+                player.addItems(items);
+                player.nextPlay();
+            });
+        });
+
+        $('#selectPlaylistUser').on('click', function(){
+            vki.loadPlaylist('user', function(items){                
+                player.addItems(items);
+                player.nextPlay();
+            });
+        });
+
+    }();
 
 
 

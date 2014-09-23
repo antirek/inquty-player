@@ -19,15 +19,18 @@
     <body>
         
         <div class="container">
+            <div class="row" style="min-height:10px;">
+                
+            </div>
             <div class="row">
                 <div class="col-md-4">
                     <h2>inquty.ru</h2>
                 </div>                
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <div id="login_button" onclick="VK.Auth.login(authInfo, 8);"></div>        
                     <div id="userinfo"></div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <a href="#" id="togglePlaylist" class="btn btn-default">
                         <span class="glyphicon glyphicon-list-alt"></span>
                     </a>
@@ -35,10 +38,23 @@
                     <a href="#" id="next" class="btn btn-default">
                         <span class="glyphicon glyphicon-forward"></span>
                     </a>
+
+                    <!-- Single button -->
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        load <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu" role="menu">
+                        <li><a href="#" id="selectPlaylistRecommendations">Recommendations</a></li>
+                        <li><a href="#" id="selectPlaylistUser">Your playlist</a></li>
+                        <li><a href="#" id="selectPlaylistPopular">Popular</a></li>
+                        <li><a href="#" id="search">Search</a></li>
+                      </ul>
+                    </div>
                 </div>
             </div>
 
-            <div class="row" style="min-height:400px;">
+            <div class="row" style="min-height:350px;">
                 <div class="col-md-12">
                     <div id="playlist" style="display: none;"></div>
                 </div>

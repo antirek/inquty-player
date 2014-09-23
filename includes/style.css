@@ -2,6 +2,9 @@
   max-height: 400px;
   overflow-y:scroll;                 
 }
+.active {
+   font-weight: bold;
+}
 
 body { 
   background: url('background.jpg') no-repeat center center fixed; 
