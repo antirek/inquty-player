@@ -333,14 +333,31 @@ var vk = function(){
         });
     }
 
-    var loadPlaylist = function(type, callback){
+    var getSearchAudioList = function(query, callback){
+        VK.api("audio.search", {
+            count: 100,            
+            q: query,
+        }, function(data) {
+            if (data.response) {
+                callback(data.response);
+            }
+        });
+    }
+
+    var loadPlaylist = function(type, callback, option){
         switch(type){            
             case 'user':
                 getUserAudioList(callback);
                 break;
+            
             case 'popular':
                 getPopularAudioList(callback);
                 break;
+            
+            case 'search':
+                getSearchAudioList(option, callback);
+                break;
+
             case 'recommendations':                
             default:
                 getRecommendAudioList(callback);
@@ -388,6 +405,21 @@ $(function() {
             vki.loadPlaylist('user', function(items){                
                 player.addItems(items);
                 player.currentPlay();
+            });
+        });
+
+        $('#selectSearch').on('click', function(){
+            $("#searchForm").show();
+            $(document).submit(function(e){                
+                e.preventDefault();
+                var query = $('#searchQuery').val();                
+
+                vki.loadPlaylist('search', function(items){                
+                    player.addItems(items);
+                    player.currentPlay();
+                    $('#playlist').show();
+                    $("#searchForm").hide();
+                }, query);
             });
         });
 

@@ -48,14 +48,19 @@
                         <li><a href="#" id="selectPlaylistRecommendations">Recommendations</a></li>
                         <li><a href="#" id="selectPlaylistUser">Your playlist</a></li>
                         <li><a href="#" id="selectPlaylistPopular">Popular</a></li>
-                        <li><a href="#" id="search">Search</a></li>
+                        <li><a href="#" id="selectSearch">Search</a></li>
                       </ul>
                     </div>
                 </div>
             </div>
 
-            <div class="row" style="min-height:350px;">
+            <div class="row" style="min-height:320px;">
                 <div class="col-md-12">
+                    <div id="searchForm" style="display: none;" class="well">
+                        <form name="search">
+                            <input type="text" id="searchQuery" placeholder="Type here" />
+                        </form>
+                    </div>
                     <div id="playlist" style="display: none;"></div>
                 </div>
             </div>
