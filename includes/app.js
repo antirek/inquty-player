@@ -427,12 +427,28 @@ $(function() {
 
 
 
-    var images = [  '1.jpg', '2.jpg', '3.jpg',
-                    '4.jpg', '5.jpg', '6.jpg',
-                    '7.jpg', '8.jpg', '9.jpg' ];
+    var images = [];
 
-    var image = images[Math.floor(Math.random()*images.length)];
+    $.ajax({
+      url: "http://pixabay.com/api/?username=antirek&key=d1f0c1d17171d78cd832&search_term=yellow+flower&image_type=photo",
+      success: function(result, status, xhr){
+        for(var i = 0; i<result.hits.length; i++){
+            images.push(result.hits[i].webformatURL);
+        }        
+        var image = images[Math.floor(Math.random()*images.length)];
+        $('body').css({
+            'background':'url(' + image + ') no-repeat center center fixed',
+            'background-size': '100% auto'
+        });
+      },
+      error: function(xhr, status, error){
+        console.log(error);
+        $('body').css({
+            'background':'url(/includes/images/1.jpg) no-repeat center center fixed',
+            'background-size': '100% auto'
+        });
+      }
+    })
 
-    $('body').css('background','url(includes/images/' + image + ')');
 
 });
