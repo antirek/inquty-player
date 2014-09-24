@@ -66,59 +66,65 @@ var Player = function(){
 
 
     var Playlist = function(){
-        var items = {};
-        var current = null;        
+        var items = [];
+        var currentIndex = 0;        
 
         var addItem = function(item){
             if(item.aid){
-                items[item.aid] = item;
+                items.push(item);
             }
         }
 
-        var addItems = function(itemos){
-            var keys = Object.keys(itemos);
-            for (var i = keys.length - 1; i >= 0; i--) {
-                addItem(itemos[keys[i]]);
-            };
-            console.log(items);      
+        var addItems = function(itemos){            
+            for (var i = 0; i < itemos.length; i++) {
+                addItem(itemos[i]);
+            };            
         }
 
         var removeItems = function(){
-            current = null;
-            items = {};
+            currentIndex = 0;
+            items = [];
         }
 
-        var getCurrent = function(){
-            return items[current];
+        var getCurrentItem = function(){
+            return items[currentIndex];
         }
 
-        var setCurrent = function(item){
-            current = item.aid;
+        var getItemIndex = function(item){
+            var j = null;
+            for (var i = 0; i < items.length; i++){
+                if(items[i].aid == item.aid){
+                    j = i;
+                }
+            }
+            return j;
+        }
+
+        var getItemByAid = function(aid){
+            var j = 0;
+            console.log(aid);
+            for (var i = 0; i < items.length; i++) {
+                if(items[i].aid == aid){
+                    j = i;
+                    console.log('good'+j+i);
+                }
+            };
+            return items[j];
+        }
+
+        var setCurrentIndex = function(item){
+            currentIndex = getItemIndex(item);
 
             $('#playlist a').removeClass('active');            
-            $('#playlist a[aid='+current+']').addClass('active');
+            $('#playlist a[aid='+item.aid+']').addClass('active');
         }
 
         var getNext = function(){            
-            var index = 0;          
-            var keys = Object.keys(items);
-            if(!current){
-                index = keys[0];
-            }else{                
-                var j = 0;
-                for(var i = 0; i < keys.length - 1; i++){                    
-                    if(parseInt(keys[i]) === parseInt(current)){
-                        j = i;                        
-                    }                    
-                }
-                index = keys[j + 1];
-            }            
-            current = index;
-            return items[index];
+            return items[currentIndex + 1];
         }
 
-        var getById = function(id){
-            return items[id];
+        var getByIndex = function(index){
+            return items[index];
         }
 
         var formatSeconds = function(secs){
@@ -154,7 +160,8 @@ var Player = function(){
             li.on('click', function(e) {
                 e.preventDefault();
                 var aid = $('a', this).attr('aid');
-                audioPlay(items[aid]);
+                console.log(aid);
+                audioPlay(getItemByAid(aid));
             });
 
             return li;
@@ -165,8 +172,8 @@ var Player = function(){
                 class: 'list-group nav2'
             });            
             
-            for (key in items){ 
-                ul.append(renderItem(items[key]));
+            for (var i = 0; i < items.length; i++){ 
+                ul.append(renderItem(items[i]));
             }
 
             return ul;
@@ -177,9 +184,10 @@ var Player = function(){
             addItems: addItems,
             removeItems: removeItems,
             getNext: getNext,
-            getById: getById,        
+            getCurrentItem: getCurrentItem,
+            getByIndex: getByIndex,        
             render: render,
-            setCurrent: setCurrent,
+            setCurrentIndex: setCurrentIndex,
         }
     }
 
@@ -194,9 +202,14 @@ var Player = function(){
         audioPlay(item)
     }
 
+    var currentPlay = function(){
+        var item = playlist.getCurrentItem();
+        audioPlay(item);
+    }
+
 
     var audioPlay = function(item) {
-        playlist.setCurrent(item);
+        playlist.setCurrentIndex(item);
         audio.load(item.url);
         audio.play();
         $('#info').html(item.artist + ' - ' + item.title);
@@ -221,7 +234,7 @@ var Player = function(){
             nextPlay();
         };
 
-        nextPlay();
+        currentPlay();
     };
 
     var addItems = function(items){
@@ -235,7 +248,8 @@ var Player = function(){
         audioPlay: audioPlay,
         addItems: addItems,        
         initPlayer: initPlayer,
-        nextPlay: nextPlay
+        nextPlay: nextPlay,
+        currentPlay: currentPlay,
     }
 }
 
@@ -359,21 +373,21 @@ $(function() {
         $('#selectPlaylistRecommendations').on('click', function(){
             vki.loadPlaylist('recommendations', function(items){
                 player.addItems(items);
-                player.nextPlay();
+                player.currentPlay();
             });
         });
 
         $('#selectPlaylistPopular').on('click', function(){
             vki.loadPlaylist('popular', function(items){                
                 player.addItems(items);
-                player.nextPlay();
+                player.currentPlay();
             });
         });
 
         $('#selectPlaylistUser').on('click', function(){
             vki.loadPlaylist('user', function(items){                
                 player.addItems(items);
-                player.nextPlay();
+                player.currentPlay();
             });
         });
 
