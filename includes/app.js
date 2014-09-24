@@ -430,7 +430,7 @@ $(function() {
     var images = [];
 
     $.ajax({
-      url: "http://pixabay.com/api/?username=antirek&key=d1f0c1d17171d78cd832&search_term=yellow+flower&image_type=photo",
+      url: "http://pixabay.com/api/?username=antirek&key=d1f0c1d17171d78cd832&search_term=sky&image_type=photo&orientation=horizontal&per_page=50",
       success: function(result, status, xhr){
         for(var i = 0; i<result.hits.length; i++){
             images.push(result.hits[i].webformatURL);
