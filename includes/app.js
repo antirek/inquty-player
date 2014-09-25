@@ -427,26 +427,30 @@ $(function() {
 
 
 
-    var images = [];
+    var images = ['/includes/images/1.jpg'];
 
-    $.ajax({
-      url: "http://pixabay.com/api/?username=antirek&key=d1f0c1d17171d78cd832&search_term=sky&image_type=photo&orientation=horizontal&per_page=50",
-      success: function(result, status, xhr){
-        for(var i = 0; i<result.hits.length; i++){
-            images.push(result.hits[i].webformatURL);
-        }        
-        var image = images[Math.floor(Math.random()*images.length)];
+    var setBackground = function(){
+        var image = images[Math.floor(Math.random()*images.length)];        
         $('body').css({
             'background':'url(' + image + ') no-repeat center center fixed',
             'background-size': '100% auto'
         });
-      },
+    }
+
+    $.ajax({
+      url: "http://pixabay.com/api/?username=antirek&key=d1f0c1d17171d78cd832&search_term=sky&image_type=photo&orientation=horizontal&per_page=50",
+      success: function(result, status, xhr){        
+        images = [];
+
+        for(var i = 0; i < result.hits.length; i++){
+            images.push(result.hits[i].webformatURL);
+        }        
+        
+        setBackground();
+        setInterval(setBackground, 30000);
+      },      
       error: function(xhr, status, error){
-        console.log(error);
-        $('body').css({
-            'background':'url(/includes/images/1.jpg) no-repeat center center fixed',
-            'background-size': '100% auto'
-        });
+        setBackground();
       }
     })
 
