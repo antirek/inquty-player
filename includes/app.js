@@ -67,7 +67,7 @@ var Player = function(){
 
     var Playlist = function(){
         var items = [];
-        var currentIndex = 0;        
+        var currentIndex = null;        
 
         var addItem = function(item){
             if(item.aid){
@@ -78,53 +78,48 @@ var Player = function(){
         var addItems = function(itemos){            
             for (var i = 0; i < itemos.length; i++) {
                 addItem(itemos[i]);
-            };            
+            };
+            setCurrentIndex(0);
         }
 
         var removeItems = function(){
-            currentIndex = 0;
+            currentIndex = null;
             items = [];
         }
 
         var getCurrentItem = function(){
-            return items[currentIndex];
-        }
 
-        var getItemIndex = function(item){
-            var j = null;
-            for (var i = 0; i < items.length; i++){
-                if(items[i].aid == item.aid){
-                    j = i;
-                }
-            }
-            return j;
-        }
-
-        var getItemByAid = function(aid){
-            var j = 0;
-            console.log(aid);
-            for (var i = 0; i < items.length; i++) {
-                if(items[i].aid == aid){
-                    j = i;
-                    console.log('good'+j+i);
-                }
-            };
-            return items[j];
-        }
-
-        var setCurrentIndex = function(item){
-            currentIndex = getItemIndex(item);
+            var item = items[currentIndex];
 
             $('#playlist a').removeClass('active');            
             $('#playlist a[aid='+item.aid+']').addClass('active');
+
+            return item;
+        }        
+
+        var getItemByAid = function(aid){
+            var j = 0;            
+            for (var i = 0; i < items.length; i++) {
+                if(items[i].aid == aid){
+                    j = i;                    
+                }
+            };
+            setCurrentIndex(j);
+            return getCurrentItem();
         }
 
-        var getNext = function(){            
-            return items[currentIndex + 1];
+        var setCurrentIndex = function(index){
+            currentIndex = index;
+        }
+
+        var getNext = function(){
+            setCurrentIndex(currentIndex + 1);
+            return getCurrentItem();
         }
 
         var getByIndex = function(index){
-            return items[index];
+            setCurrentIndex(index);
+            return getCurrentItem();
         }
 
         var formatSeconds = function(secs){
@@ -159,8 +154,7 @@ var Player = function(){
 
             li.on('click', function(e) {
                 e.preventDefault();
-                var aid = $('a', this).attr('aid');
-                console.log(aid);
+                var aid = $('a', this).attr('aid');                
                 audioPlay(getItemByAid(aid));
             });
 
@@ -175,19 +169,16 @@ var Player = function(){
             for (var i = 0; i < items.length; i++){ 
                 ul.append(renderItem(items[i]));
             }
-
             return ul;
         }
 
-        return {
-            addItem: addItem,
+        return {            
             addItems: addItems,
             removeItems: removeItems,
             getNext: getNext,
             getCurrentItem: getCurrentItem,
             getByIndex: getByIndex,        
-            render: render,
-            setCurrentIndex: setCurrentIndex,
+            render: render,            
         }
     }
 
@@ -202,21 +193,20 @@ var Player = function(){
         audioPlay(item)
     }
 
-    var currentPlay = function(){
+    var play = function(){
         var item = playlist.getCurrentItem();
         audioPlay(item);
     }
 
 
     var audioPlay = function(item) {
-        playlist.setCurrentIndex(item);
         audio.load(item.url);
         audio.play();
         $('#info').html(item.artist + ' - ' + item.title);
     }
 
 
-    var initPlayer = function() {
+    var init = function() {
         
         var bindButtons = function(){
             
@@ -232,10 +222,8 @@ var Player = function(){
 
         audio.trackEnded = function() {
             nextPlay();
-        };
-
-        currentPlay();
-    };
+        };        
+    }();
 
     var addItems = function(items){
         playlist.removeItems();        
@@ -245,11 +233,10 @@ var Player = function(){
 
     
     return {
-        audioPlay: audioPlay,
         addItems: addItems,        
-        initPlayer: initPlayer,
+        init: init,
         nextPlay: nextPlay,
-        currentPlay: currentPlay,
+        play: play,
     }
 }
 
@@ -375,37 +362,30 @@ var vk = function(){
 $(function() {
     
     var vki = vk();
-    var player = Player();
+    var player = Player();    
+
+    var addItemsAndPlay = function(items){
+        player.addItems(items);
+        player.play();
+    }
     
     vki.auth(function(){
-        vki.loadPlaylist('recommendations', function (items) {
-            player.addItems(items);
-            player.initPlayer();
-        });
+        vki.loadPlaylist('recommendations', addItemsAndPlay);
     });
 
 
     var bindSelectPlaylists = function(){
 
         $('#selectPlaylistRecommendations').on('click', function(){
-            vki.loadPlaylist('recommendations', function(items){
-                player.addItems(items);
-                player.currentPlay();
-            });
+            vki.loadPlaylist('recommendations', addItemsAndPlay);
         });
 
         $('#selectPlaylistPopular').on('click', function(){
-            vki.loadPlaylist('popular', function(items){                
-                player.addItems(items);
-                player.currentPlay();
-            });
+            vki.loadPlaylist('popular', addItemsAndPlay);
         });
 
         $('#selectPlaylistUser').on('click', function(){
-            vki.loadPlaylist('user', function(items){                
-                player.addItems(items);
-                player.currentPlay();
-            });
+            vki.loadPlaylist('user', addItemsAndPlay);
         });
 
         $('#selectSearch').on('click', function(){
@@ -415,8 +395,8 @@ $(function() {
                 var query = $('#searchQuery').val();                
 
                 vki.loadPlaylist('search', function(items){                
-                    player.addItems(items);
-                    player.currentPlay();
+                    addItemsAndPlay(items);
+
                     $('#playlist').show();
                     $("#searchForm").hide();
                 }, query);
