@@ -211,6 +211,10 @@ var Player = function(){
         $('#info').html(item.artist + ' - ' + item.title);
     }
 
+    var load = function(){
+        var item = playlist.getCurrentItem();
+        audioLoad(item);
+    }
 
     var init = function() {
         
@@ -243,6 +247,7 @@ var Player = function(){
         init: init,
         nextPlay: nextPlay,
         play: play,
+        load: load,
     }
 }
 
@@ -252,7 +257,6 @@ var vk = function(){
     var userid = null;   
 
     var auth = function(callback){
-
         VK.init({
             apiId: 3668304
         });
@@ -270,7 +274,6 @@ var vk = function(){
             }
         }
 
-
         function loadProfile(id) {
             VK.api("getProfiles",
                 {uids: id},
@@ -278,12 +281,10 @@ var vk = function(){
             );
         }
 
-
         function loadProfileCallback(data) {
             var profile = data.response[0];            
             showProfile(profile);
         }
-
 
         function showProfile(user) {
             $('#userinfo').html(         
@@ -372,9 +373,9 @@ $(function() {
     var settings = {};
 
     var readSettingsFromStorage = function(){        
-        settings['startPlayOnLoadPlayer'] = $.jStorage.get('startPlayOnLoadPlayer');        
+        settings['startPlayOnLoadPlayer'] = $.jStorage.get('startPlayOnLoadPlayer');
+        $('#startPlayOnLoadPlayer').prop('checked', settings['startPlayOnLoadPlayer']);        
     }();
-
 
     var addItemsAndPlay = function(items){
         player.addItems(items);
@@ -386,10 +387,11 @@ $(function() {
             player.addItems(items);                     
             if(settings['startPlayOnLoadPlayer']){
                 player.play();
+            }else{
+                player.load();
             }
         });
     });
-
 
     var bindButtons = function(){
 
@@ -427,7 +429,6 @@ $(function() {
 
     }();
 
-
     
 
     var images = ['/includes/images/1.jpg'];
@@ -456,7 +457,5 @@ $(function() {
         setBackground();
       }
     })
-
-
 
 });
