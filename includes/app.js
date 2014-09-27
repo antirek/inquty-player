@@ -92,7 +92,7 @@ var Player = function(){
             var item = items[currentIndex];
 
             $('#playlist a').removeClass('active');            
-            $('#playlist a[aid='+item.aid+']').addClass('active');
+            $('#playlist a[id='+currentIndex+']').addClass('active');
 
             return item;
         }        
@@ -112,8 +112,8 @@ var Player = function(){
             currentIndex = index;
         }
 
-        var getNext = function(){
-            setCurrentIndex(currentIndex + 1);
+        var getNext = function(){            
+            setCurrentIndex(parseInt(currentIndex) + 1);
             return getCurrentItem();
         }
 
@@ -125,11 +125,11 @@ var Player = function(){
         var formatSeconds = function(secs){
             var minutes = Math.floor(secs / 60);
             var seconds = secs - minutes * 60;
-            seconds = (seconds > 9) ? seconds : '0'+seconds;
+            seconds = (seconds > 9) ? seconds : '0' + seconds;
             return minutes + ':' + seconds;
         }
 
-        var renderItem = function(item){
+        var renderItem = function(index, item){
 
             var span = $('<span>',{
                 class: 'badge pull-right',
@@ -137,10 +137,7 @@ var Player = function(){
             });
 
             var anchor = $('<a />', {
-                'aid': item.aid,
-                'owner_id': item.owner_id,
-                'type': "audio/mpeg",
-                'data-src': item.url,
+                'id': index,                
                 'html': item.artist + ' - ' + item.title,
                 'href': '#',
             });
@@ -154,8 +151,8 @@ var Player = function(){
 
             li.on('click', function(e) {
                 e.preventDefault();
-                var aid = $('a', this).attr('aid');
-                var item = getItemByAid(aid);              
+                var id = $('a', this).attr('id');
+                var item = getByIndex(parseInt(id));
                 play();
             });
 
@@ -168,7 +165,7 @@ var Player = function(){
             });            
             
             for (var i = 0; i < items.length; i++){ 
-                ul.append(renderItem(items[i]));
+                ul.append(renderItem(i, items[i]));
             }
             return ul;
         }
@@ -191,7 +188,7 @@ var Player = function(){
 
     var nextPlay = function() {
         var item = playlist.getNext();
-        audioLoad(item);       
+        audioLoad(item);
         audioPlay()
     }
 
@@ -202,7 +199,7 @@ var Player = function(){
     }
 
 
-    var audioPlay = function(item) {        
+    var audioPlay = function(item) {
         audio.play();
     }
 
@@ -236,12 +233,11 @@ var Player = function(){
     }();
 
     var addItems = function(items){
-        playlist.removeItems();        
+        playlist.removeItems();
         playlist.addItems(items);
         $('#playlist').html(playlist.render());
     }
 
-    
     return {
         addItems: addItems,        
         init: init,
@@ -372,9 +368,12 @@ $(function() {
     var player = Player();
     var settings = {};
 
-    var readSettingsFromStorage = function(){        
+    var readSettingsFromStorage = function(){       
         settings['startPlayOnLoadPlayer'] = $.jStorage.get('startPlayOnLoadPlayer');
-        $('#startPlayOnLoadPlayer').prop('checked', settings['startPlayOnLoadPlayer']);        
+        settings['intervalForBackgroundChange'] = $.jStorage.get('intervalForBackgroundChange');
+
+        $('#startPlayOnLoadPlayer').prop('checked', settings['startPlayOnLoadPlayer']);
+        $('#intervalForBackgroundChange').val(settings['intervalForBackgroundChange']);
     }();
 
     var addItemsAndPlay = function(items){
@@ -396,7 +395,7 @@ $(function() {
     var bindButtons = function(){
 
         $('#selectPlaylistRecommendations').on('click', function(){
-            vki.loadPlaylist('recommendations', addItemsAndPlay);            
+            vki.loadPlaylist('recommendations', addItemsAndPlay);
         });
 
         $('#selectPlaylistPopular').on('click', function(){
@@ -409,11 +408,11 @@ $(function() {
 
         $('#selectSearch').on('click', function(){
             $("#searchForm").show();
-            $(document).submit(function(e){                
+            $(document).submit(function(e){
                 e.preventDefault();
-                var query = $('#searchQuery').val();                
+                var query = $('#searchQuery').val();
 
-                vki.loadPlaylist('search', function(items){                
+                vki.loadPlaylist('search', function(items){
                     addItemsAndPlay(items);
 
                     $('#playlist').show();
@@ -424,12 +423,13 @@ $(function() {
 
         $('#saveSettings').on('click', function(){
             $.jStorage.set('startPlayOnLoadPlayer', $('#startPlayOnLoadPlayer').prop('checked'));
+            $.jStorage.set('intervalForBackgroundChange', $('#intervalForBackgroundChange').val());
+           
             $('#settings').modal('hide');
         });
 
     }();
 
-    
 
     var images = ['/includes/images/1.jpg'];
 
@@ -443,7 +443,7 @@ $(function() {
 
     $.ajax({
       url: "http://pixabay.com/api/?username=antirek&key=d1f0c1d17171d78cd832&search_term=sky&image_type=photo&orientation=horizontal&per_page=50",
-      success: function(result, status, xhr){        
+      success: function(result, status, xhr){
         images = [];
 
         for(var i = 0; i < result.hits.length; i++){
@@ -451,7 +451,7 @@ $(function() {
         }        
         
         setBackground();
-        setInterval(setBackground, 30000);
+        setInterval(setBackground, parseInt(settings['intervalForBackgroundChange'])*1000);
       },      
       error: function(xhr, status, error){
         setBackground();

@@ -52,7 +52,7 @@
                       </ul>                      
                     </div>
                     <button class="btn btn-default" data-toggle="modal" data-target="#settings">
-                      Settings
+                        <span class="glyphicon glyphicon-cog"></span>                      
                     </button>
                 </div>
             </div>
@@ -86,29 +86,46 @@
 
 
         <div class="modal fade" id="settings" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">Settings</h4>
-              </div>
-              <div class="modal-body">
-                
-                <form role="form">
-                    
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" id="startPlayOnLoadPlayer"> start play on load player
-                        </label>
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title">Settings</h4>
                     </div>
-                </form>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="saveSettings">Save settings</button>
-              </div>
+
+                    <div class="modal-body">
+                        <form class="form-inline" role="form">
+                        <h4>Player</h4>
+                        
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="startPlayOnLoadPlayer"> start play on load player
+                            </label>
+                        </div>
+
+                        <h4>Background</h4>
+
+                        <div class="form-group">
+                            <label for="">interval for background change</label> 
+                            <select class="form-control" id="intervalForBackgroundChange">
+                              <option value="60">every 1 min</option>
+                              <option value="120">every 2 min</option>
+                              <option value="300">every 5 min</option>
+                              <option value="600">every 10 min</option>
+                              <option value="1800">every 30 min</option>
+                            </select>
+                        </div>
+                
+                    </div>
+                    </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveSettings">Save settings</button>
+                    </div>
+
+                </div>
             </div>
-          </div>
         </div>
 
 
