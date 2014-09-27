@@ -101,7 +101,7 @@ var Player = function(){
             var j = 0;            
             for (var i = 0; i < items.length; i++) {
                 if(items[i].aid == aid){
-                    j = i;                    
+                    j = i;                
                 }
             };
             setCurrentIndex(j);
@@ -154,8 +154,9 @@ var Player = function(){
 
             li.on('click', function(e) {
                 e.preventDefault();
-                var aid = $('a', this).attr('aid');                
-                audioPlay(getItemByAid(aid));
+                var aid = $('a', this).attr('aid');
+                var item = getItemByAid(aid);              
+                play();
             });
 
             return li;
@@ -189,19 +190,24 @@ var Player = function(){
 
 
     var nextPlay = function() {
-        var item = playlist.getNext();        
-        audioPlay(item)
+        var item = playlist.getNext();
+        audioLoad(item);       
+        audioPlay()
     }
 
     var play = function(){
         var item = playlist.getCurrentItem();
-        audioPlay(item);
+        audioLoad(item);
+        audioPlay();
     }
 
 
-    var audioPlay = function(item) {
-        audio.load(item.url);
+    var audioPlay = function(item) {        
         audio.play();
+    }
+
+    var audioLoad = function(item) {
+        audio.load(item.url);
         $('#info').html(item.artist + ' - ' + item.title);
     }
 
@@ -362,7 +368,13 @@ var vk = function(){
 $(function() {
     
     var vki = vk();
-    var player = Player();    
+    var player = Player();
+    var settings = {};
+
+    var readSettingsFromStorage = function(){        
+        settings['startPlayOnLoadPlayer'] = $.jStorage.get('startPlayOnLoadPlayer');        
+    }();
+
 
     var addItemsAndPlay = function(items){
         player.addItems(items);
@@ -370,14 +382,19 @@ $(function() {
     }
     
     vki.auth(function(){
-        vki.loadPlaylist('recommendations', addItemsAndPlay);
+        vki.loadPlaylist('recommendations', function(items){
+            player.addItems(items);                     
+            if(settings['startPlayOnLoadPlayer']){
+                player.play();
+            }
+        });
     });
 
 
-    var bindSelectPlaylists = function(){
+    var bindButtons = function(){
 
         $('#selectPlaylistRecommendations').on('click', function(){
-            vki.loadPlaylist('recommendations', addItemsAndPlay);
+            vki.loadPlaylist('recommendations', addItemsAndPlay);            
         });
 
         $('#selectPlaylistPopular').on('click', function(){
@@ -403,9 +420,15 @@ $(function() {
             });
         });
 
+        $('#saveSettings').on('click', function(){
+            $.jStorage.set('startPlayOnLoadPlayer', $('#startPlayOnLoadPlayer').prop('checked'));
+            $('#settings').modal('hide');
+        });
+
     }();
 
 
+    
 
     var images = ['/includes/images/1.jpg'];
 
@@ -433,6 +456,7 @@ $(function() {
         setBackground();
       }
     })
+
 
 
 });

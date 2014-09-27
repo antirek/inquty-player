@@ -10,6 +10,7 @@
         <script src="lib/jquery/dist/jquery.js"></script>
         <script src="lib/audiojs/audiojs/audio.js"></script>
         <script src="lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="lib/jstorage/jstorage.js"></script>
 
         <script src="http://vk.com/js/api/openapi.js"></script>
 
@@ -48,8 +49,11 @@
                         <li><a href="#" id="selectPlaylistUser">Your playlist</a></li>
                         <li><a href="#" id="selectPlaylistPopular">Popular</a></li>
                         <li><a href="#" id="selectSearch">Search</a></li>
-                      </ul>
+                      </ul>                      
                     </div>
+                    <button class="btn btn-default" data-toggle="modal" data-target="#settings">
+                      Settings
+                    </button>
                 </div>
             </div>
 
@@ -57,7 +61,7 @@
                 <div class="col-md-12">
                     <div id="searchForm" style="display: none;" class="well">
                         <form name="search" class="form-inline" role="form">
-                            <input type="text" id="searchQuery" placeholder="Type here" class="form-control" size="50"/>
+                            <input type="text" id="searchQuery" placeholder="Type here" class="form-control" size="53"/>
                         </form>
                     </div>
                     <div id="playlist" style="display: none;"></div>
@@ -74,9 +78,39 @@
                 <div class="col-md-12">
                     <audio preload id="player"></audio>
                     <div id="info" class="track-details"></div>
+
+                    
                 </div>
             </div>
         </div>
+
+
+        <div class="modal fade" id="settings" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Settings</h4>
+              </div>
+              <div class="modal-body">
+                
+                <form role="form">
+                    
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" id="startPlayOnLoadPlayer"> start play on load player
+                        </label>
+                    </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveSettings">Save settings</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
 
     </body>
 </html>
