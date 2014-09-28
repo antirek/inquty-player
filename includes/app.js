@@ -229,6 +229,7 @@ var Player = function(){
     return {
         addItems: addItems,
         nextPlay: nextPlay,
+        getCurrentItem: playlist.getCurrentItem,
         play: play,
         load: load,
     }
@@ -321,6 +322,16 @@ var vk = function(){
         });
     }
 
+    var addItemToVk = function(item){
+        VK.api('audio.add', {
+            audio_id: item.aid,
+            owner_id: item.owner_id,
+        },
+        function(data){
+            console.log(data)
+        });
+    }
+
     var loadPlaylist = function(type, callback, option){
         switch(type){            
             case 'user':
@@ -344,6 +355,7 @@ var vk = function(){
     return {
         auth: auth,
         loadPlaylist: loadPlaylist,
+        addItemToVk: addItemToVk,
     }
 }
 
@@ -353,9 +365,13 @@ $(function() {
     
     var vki = vk();
     var player = Player();
-    var settings = {};
 
-    var readSettingsFromStorage = function(){       
+    var settings = {
+        startPlayOnLoadPlayer: true,
+        intervalForBackgroundChange: 600,
+    };
+
+    var readSettingsFromStorage = function(){
         settings['startPlayOnLoadPlayer'] = $.jStorage.get('startPlayOnLoadPlayer');
         settings['intervalForBackgroundChange'] = $.jStorage.get('intervalForBackgroundChange');
 
@@ -410,6 +426,11 @@ $(function() {
             });
         });
 
+        $('#addItemToVk').on('click', function(){
+            console.log(player.getCurrentItem());
+            vki.addItemToVk(player.getCurrentItem());
+        });
+
         $('#saveSettings').on('click', function(){
             $.jStorage.set('startPlayOnLoadPlayer', $('#startPlayOnLoadPlayer').prop('checked'));
             $.jStorage.set('intervalForBackgroundChange', $('#intervalForBackgroundChange').val());
@@ -422,10 +443,14 @@ $(function() {
 
     var images = ['/includes/images/1.jpg'];
 
-    var setBackground = function(){
-        var image = images[Math.floor(Math.random()*images.length)];        
+    var selectRandomImageAndSetBackground = function(){
+        var image_url = images[Math.floor(Math.random()*images.length)];
+        setBackground(image_url);
+    }
+
+    var setBackground = function(url){
         $('body').css({
-            'background':'url(' + image + ') no-repeat center center fixed',
+            'background':'url(' + url + ') no-repeat center center fixed',
             'background-size': '100% auto'
         });
     }
@@ -437,13 +462,13 @@ $(function() {
 
         for(var i = 0; i < result.hits.length; i++){
             images.push(result.hits[i].webformatURL);
-        }        
-        
-        setBackground();
-        setInterval(setBackground, parseInt(settings['intervalForBackgroundChange'])*1000);
+        }
+
+        selectRandomImageAndSetBackground();
+        setInterval(selectRandomImageAndSetBackground, parseInt(settings['intervalForBackgroundChange'])*1000);
       },      
       error: function(xhr, status, error){
-        setBackground();
+        selectRandomImageAndSetBackground();
       }
     })
 
