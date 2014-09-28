@@ -252,7 +252,7 @@ var vk = function(){
             if (response.session) {
                 $('#login_button').hide();
                 userid = response.session.mid;           
-                loadProfile(response.session.mid);
+                loadProfile(userid);
             } else {
                 $('#login_button').show();
             }
@@ -271,9 +271,7 @@ var vk = function(){
         }
 
         function showProfile(user) {
-            $('#userinfo').html(         
-                user.last_name + " " + user.first_name
-                );
+            $('#userinfo').html(user.last_name + " " + user.first_name);
             callback();
         }
     };
@@ -332,8 +330,8 @@ var vk = function(){
         });
     }
 
-    var loadPlaylist = function(type, callback, option){
-        switch(type){            
+    var loadPlaylist = function(options, callback){
+        switch(options['type']){            
             case 'user':
                 getUserPlaylist(callback);
                 break;
@@ -343,7 +341,7 @@ var vk = function(){
                 break;
             
             case 'search':
-                getSearchPlaylist(option, callback);
+                getSearchPlaylist(options['query'], callback);
                 break;
 
             case 'recommendations':                
@@ -360,7 +358,6 @@ var vk = function(){
 }
 
 
-
 $(function() {
     
     var vki = vk();
@@ -371,10 +368,27 @@ $(function() {
         intervalForBackgroundChange: 600,
     };
 
-    var readSettingsFromStorage = function(){
-        settings['startPlayOnLoadPlayer'] = $.jStorage.get('startPlayOnLoadPlayer');
-        settings['intervalForBackgroundChange'] = $.jStorage.get('intervalForBackgroundChange');
+    var saveDefaults = function(){
+        for(key in settings){
+            if(!$.jStorage.get(key)){
+                console.log('set ' + key)
+                $.jStorage.set(key, settings[key]);
+            }
+        }
+    }();
 
+    var setIfExist = function(key){
+        var value = $.jStorage.get(key);
+        if(value){
+            settings[key] = value;
+        }
+    }
+
+    var readSettingsFromStorage = function(){
+        for(var key in settings){
+            setIfExist(key);
+        }
+        
         $('#startPlayOnLoadPlayer').prop('checked', settings['startPlayOnLoadPlayer']);
         $('#intervalForBackgroundChange').val(settings['intervalForBackgroundChange']);
     }();
@@ -385,7 +399,7 @@ $(function() {
     }
     
     vki.auth(function(){
-        vki.loadPlaylist('recommendations', function(items){
+        vki.loadPlaylist({type:'recommendations'}, function(items){
             player.addItems(items);
 
             if(settings['startPlayOnLoadPlayer']){
@@ -400,15 +414,15 @@ $(function() {
     var bindButtons = function(){
 
         $('#selectPlaylistRecommendations').on('click', function(){
-            vki.loadPlaylist('recommendations', addItemsAndPlay);
+            vki.loadPlaylist({type:'recommendations'}, addItemsAndPlay);
         });
 
         $('#selectPlaylistPopular').on('click', function(){
-            vki.loadPlaylist('popular', addItemsAndPlay);
+            vki.loadPlaylist({type:'popular'}, addItemsAndPlay);
         });
 
         $('#selectPlaylistUser').on('click', function(){
-            vki.loadPlaylist('user', addItemsAndPlay);
+            vki.loadPlaylist({type:'user'}, addItemsAndPlay);
         });
 
         $('#selectSearch').on('click', function(){
@@ -417,17 +431,19 @@ $(function() {
                 e.preventDefault();
                 var query = $('#searchQuery').val();
 
-                vki.loadPlaylist('search', function(items){
+                vki.loadPlaylist({
+                    type:'search',
+                    query: query
+                }, function(items){
                     addItemsAndPlay(items);
 
                     $('#playlist').show();
                     $("#searchForm").hide();
-                }, query);
+                });
             });
         });
 
         $('#addItemToVk').on('click', function(){
-            console.log(player.getCurrentItem());
             vki.addItemToVk(player.getCurrentItem());
         });
 
@@ -435,7 +451,7 @@ $(function() {
             $.jStorage.set('startPlayOnLoadPlayer', $('#startPlayOnLoadPlayer').prop('checked'));
             $.jStorage.set('intervalForBackgroundChange', $('#intervalForBackgroundChange').val());
            
-            $('#settings').modal('hide');
+            $('#settingsModal').modal('hide');
         });
 
     }();
@@ -456,20 +472,20 @@ $(function() {
     }
 
     $.ajax({
-      url: "http://pixabay.com/api/?username=antirek&key=d1f0c1d17171d78cd832&search_term=sky&image_type=photo&orientation=horizontal&per_page=50",
-      success: function(result, status, xhr){
-        images = [];
+        url: "http://pixabay.com/api/?username=antirek&key=d1f0c1d17171d78cd832&search_term=sky&image_type=photo&orientation=horizontal&per_page=50",
+        success: function(result, status, xhr){
+            images = [];
 
-        for(var i = 0; i < result.hits.length; i++){
-            images.push(result.hits[i].webformatURL);
+            for(var i = 0; i < result.hits.length; i++){
+                images.push(result.hits[i].webformatURL);
+            }
+
+            selectRandomImageAndSetBackground();
+            setInterval(selectRandomImageAndSetBackground, parseInt(settings['intervalForBackgroundChange'])*1000);
+        },      
+        error: function(xhr, status, error){
+            selectRandomImageAndSetBackground();
         }
-
-        selectRandomImageAndSetBackground();
-        setInterval(selectRandomImageAndSetBackground, parseInt(settings['intervalForBackgroundChange'])*1000);
-      },      
-      error: function(xhr, status, error){
-        selectRandomImageAndSetBackground();
-      }
-    })
+    });
 
 });
