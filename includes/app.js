@@ -88,7 +88,6 @@ var Player = function(){
         }
 
         var getCurrentItem = function(){
-
             var item = items[currentIndex];
 
             $('#playlist a').removeClass('active');            
@@ -96,17 +95,6 @@ var Player = function(){
 
             return item;
         }        
-
-        var getItemByAid = function(aid){
-            var j = 0;            
-            for (var i = 0; i < items.length; i++) {
-                if(items[i].aid == aid){
-                    j = i;                
-                }
-            };
-            setCurrentIndex(j);
-            return getCurrentItem();
-        }
 
         var setCurrentIndex = function(index){
             currentIndex = index;
@@ -175,8 +163,8 @@ var Player = function(){
             removeItems: removeItems,
             getNext: getNext,
             getCurrentItem: getCurrentItem,
-            getByIndex: getByIndex,        
-            render: render,            
+            getByIndex: getByIndex,
+            render: render,
         }
     }
 
@@ -239,8 +227,7 @@ var Player = function(){
     }
 
     return {
-        addItems: addItems,        
-        init: init,
+        addItems: addItems,
         nextPlay: nextPlay,
         play: play,
         load: load,
@@ -250,7 +237,7 @@ var Player = function(){
 
 var vk = function(){
 
-    var userid = null;   
+    var userid = null;
 
     var auth = function(callback){
         VK.init({
@@ -290,7 +277,7 @@ var vk = function(){
         }
     };
 
-    var getRecommendAudioList = function(callback) {
+    var getRecommendationsPlaylist = function(callback) {
         VK.api("audio.getRecommendations", {
             count: 100,
             shuffle: 1,
@@ -301,7 +288,7 @@ var vk = function(){
         });
     }
 
-    var getPopularAudioList = function(callback) {
+    var getPopularPlaylist = function(callback) {
         VK.api("audio.getPopular", {
             count: 100,
             shuffle: 1,
@@ -312,7 +299,7 @@ var vk = function(){
         });
     }
 
-    var getUserAudioList = function(callback){
+    var getUserPlaylist = function(callback){
         VK.api("audio.get", {
             count: 100,
             owner_id: userid,
@@ -323,7 +310,7 @@ var vk = function(){
         });
     }
 
-    var getSearchAudioList = function(query, callback){
+    var getSearchPlaylist = function(query, callback){
         VK.api("audio.search", {
             count: 100,            
             q: query,
@@ -337,20 +324,20 @@ var vk = function(){
     var loadPlaylist = function(type, callback, option){
         switch(type){            
             case 'user':
-                getUserAudioList(callback);
+                getUserPlaylist(callback);
                 break;
             
             case 'popular':
-                getPopularAudioList(callback);
+                getPopularPlaylist(callback);
                 break;
             
             case 'search':
-                getSearchAudioList(option, callback);
+                getSearchPlaylist(option, callback);
                 break;
 
             case 'recommendations':                
             default:
-                getRecommendAudioList(callback);
+                getRecommendationsPlaylist(callback);
         }
     }
 
@@ -383,12 +370,14 @@ $(function() {
     
     vki.auth(function(){
         vki.loadPlaylist('recommendations', function(items){
-            player.addItems(items);                     
+            player.addItems(items);
+
             if(settings['startPlayOnLoadPlayer']){
                 player.play();
             }else{
                 player.load();
             }
+
         });
     });
 
