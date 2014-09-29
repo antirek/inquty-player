@@ -206,7 +206,7 @@ var Player = function(){
         var bindButtons = function(){
             
             $('#togglePlaylist').on('click',function(){
-                $('#playlist').toggle();
+                $('#playlistContent').toggle();
             });
             
             $('#next').on('click',function(){
@@ -222,7 +222,7 @@ var Player = function(){
 
     var addItems = function(items){
         playlist.removeItems();
-        playlist.addItems(items);
+        playlist.addItems(items);        
         $('#playlist').html(playlist.render());
     }
 
@@ -370,23 +370,22 @@ $(function() {
 
     var saveDefaults = function(){
         for(key in settings){
-            if(!$.jStorage.get(key)){
-                console.log('set ' + key)
+            if(!$.jStorage.get(key)){                
                 $.jStorage.set(key, settings[key]);
             }
         }
     }();
 
-    var setIfExist = function(key){
+    var getFromStorageIfExist = function(key){
         var value = $.jStorage.get(key);
         if(value){
             settings[key] = value;
         }
     }
 
-    var readSettingsFromStorage = function(){
+    var setSettings = function(){
         for(var key in settings){
-            setIfExist(key);
+            getFromStorageIfExist(key);
         }
         
         $('#startPlayOnLoadPlayer').prop('checked', settings['startPlayOnLoadPlayer']);
@@ -426,7 +425,8 @@ $(function() {
         });
 
         $('#selectSearch').on('click', function(){
-            $("#searchForm").show();
+            $("#searchForm").toggle();
+            $("#searchForm input").focus()
             $(document).submit(function(e){
                 e.preventDefault();
                 var query = $('#searchQuery').val();
@@ -466,7 +466,7 @@ $(function() {
 
     var setBackground = function(url){
         $('body').css({
-            'background':'url(' + url + ') no-repeat center center fixed',
+            'background':'url(' + url + ') no-repeat center center fixed',            
             'background-size': '100% auto'
         });
     }

@@ -34,23 +34,8 @@
                 <div class="col-md-6">
                     <a href="#" id="togglePlaylist" class="btn btn-default">
                         <span class="glyphicon glyphicon-list-alt"></span>
-                    </a>
-
-                    <a href="#" id="next" class="btn btn-default">
-                        <span class="glyphicon glyphicon-forward"></span>
-                    </a>
+                    </a>                    
                     
-                    <div class="btn-group">
-                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                        load <span class="caret"></span>
-                      </button>
-                      <ul class="dropdown-menu" role="menu">
-                        <li><a href="#" id="selectPlaylistRecommendations">Recommendations</a></li>
-                        <li><a href="#" id="selectPlaylistUser">Your playlist</a></li>
-                        <li><a href="#" id="selectPlaylistPopular">Popular</a></li>
-                        <li><a href="#" id="selectSearch">Search</a></li>
-                      </ul>                      
-                    </div>
                     <button class="btn btn-default" data-toggle="modal" data-target="#settingsModal">
                         <span class="glyphicon glyphicon-cog"></span>                      
                     </button>
@@ -64,27 +49,47 @@
 
             <div class="row" style="min-height:320px;">
                 <div class="col-md-12">
-                    <div id="searchForm" style="display: none;" class="well">
-                        <form name="search" class="form-inline" role="form">
-                            <input type="text" id="searchQuery" placeholder="Type here" class="form-control" size="53"/>
-                        </form>
+                    
+                    <div id="playlistContent" style="display: none;">
+                        
+                        <div class="btn-group" style="margin:10px;">
+                            
+                            <a href="#" id="selectPlaylistRecommendations" class="btn btn-default">Recommendations</a>
+                            <a href="#" id="selectPlaylistUser" class="btn btn-default">My playlist</a>
+                            <a href="#" id="selectPlaylistPopular" class="btn btn-default">Popular</a>
+                            <a href="#" id="selectSearch" class="btn btn-default">Search</a>
+                        
+                        </div>
+
+                        <div id="searchForm" style="display: none;" class="well">
+                            <form name="search" class="form-inline" role="form">
+                                <input type="text" id="searchQuery" placeholder="Type here" class="form-control" size="53"/>
+                            </form>
+                        </div>
+                        
+                        <div id="playlist"></div>
+
                     </div>
-                    <div id="playlist" style="display: none;"></div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-12">
-                    <canvas width="500" height="120" id="canvas" ></canvas>
+                    <canvas width="530" height="120" id="canvas" ></canvas>
                 </div>
             </div>
             
             <div class="row">
-                <div class="col-md-12">
+            
+                <div class="col-md-10">
                     <audio preload id="player"></audio>
                     <div id="info" class="track-details"></div>
+                </div>
 
-                    
+                <div class="col-md-2">
+                    <a href="#" id="next" class="btn btn-default">
+                        <span class="glyphicon glyphicon-forward"></span>
+                    </a>                    
                 </div>
             </div>
         </div>
