@@ -4,7 +4,7 @@
         <title>Inquty player</title>
         <meta content="width=device-width, initial-scale=0.5" name="viewport">
 
-        <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" media="screen" />
+        <link rel="stylesheet" href="lib/bootswatch/darkly/bootstrap.css" media="screen" />
         <link rel="stylesheet" href="includes/style.css" />
 
         <script src="lib/jquery/dist/jquery.js"></script>
@@ -24,35 +24,25 @@
                 
             </div>
             <div class="row">
-                <div class="col-md-4">
-                    <h2>inquty.ru</h2>
+                <div class="col-md-8">
+                    <a href="#" id="togglePlaylist" class="btn btn-default">
+                        Playlist
+                    </a> 
                 </div>                
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <div id="login_button" onclick="VK.Auth.login(authInfo, 8);"></div>        
                     <div id="userinfo"></div>
                 </div>
-                <div class="col-md-6">
-                    <a href="#" id="togglePlaylist" class="btn btn-default">
-                        <span class="glyphicon glyphicon-list-alt"></span>
-                    </a>                    
-                    
-                    <button class="btn btn-default" data-toggle="modal" data-target="#settingsModal">
-                        <span class="glyphicon glyphicon-cog"></span>                      
-                    </button>
-
-                    <a href="#" class="btn btn-default" id="addItemToVk">
-                        <span class="glyphicon glyphicon-plus"></span>                      
-                    </a>
-
-                </div>
+                
             </div>
 
             <div class="row" style="min-height:320px;">
                 <div class="col-md-12">
                     
+                    
                     <div id="playlistContent" style="display: none;">
                         
-                        <div class="btn-group" style="margin:10px;">
+                        <div class="btn-group btn-group-justified" style="margin-bottom:10px;">
                             
                             <a href="#" id="selectPlaylistRecommendations" class="btn btn-default">Recommendations</a>
                             <a href="#" id="selectPlaylistUser" class="btn btn-default">My playlist</a>
@@ -73,26 +63,42 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-12">
-                    <canvas width="530" height="120" id="canvas" ></canvas>
-                </div>
-            </div>
+            
             
             <div class="row">
             
                 <div class="col-md-10">
+                    <canvas width="461" height="120" id="canvas" ></canvas>
                     <audio preload id="player"></audio>
                     <div id="info" class="track-details"></div>
                 </div>
 
                 <div class="col-md-2">
+                <ul class="nav nav-pills nav-stacked">
+
+                <li>
                     <a href="#" id="next" class="btn btn-default">
                         <span class="glyphicon glyphicon-forward"></span>
-                    </a>                    
+                    </a>        
+                </li><li>
+                     <a href="#" class="btn btn-default" id="addItemToVk">
+                        <span class="glyphicon glyphicon-plus"></span>                      
+                    </a>            
+                    </li><li>
+                    <a class="btn btn-default" data-toggle="modal" data-target="#settingsModal" href="#">
+                        <span class="glyphicon glyphicon-cog"></span>                      
+                    </a>
+                    </li>
+                    
+</ul>
+
                 </div>
             </div>
         </div>
+
+
+
+
 
 
         <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

@@ -90,8 +90,8 @@ var Player = function(){
         var getCurrentItem = function(){
             var item = items[currentIndex];
 
-            $('#playlist a').removeClass('active');            
-            $('#playlist a[id='+currentIndex+']').addClass('active');
+            $('#playlist li').removeClass('active');            
+            $('#playlist a[id='+currentIndex+']').parent().addClass('active');
 
             return item;
         }        
@@ -133,7 +133,7 @@ var Player = function(){
             anchor.append(span);
 
             var li = $('<li />', {
-                class: 'list-group-item disabled',
+                class: 'list-group-item',
                 html: anchor
             });
 
@@ -206,7 +206,15 @@ var Player = function(){
         var bindButtons = function(){
             
             $('#togglePlaylist').on('click',function(){
-                $('#playlistContent').toggle();
+                $('#togglePlaylist').hide();
+                $('#playlistContent').show();
+
+                if($('#playlistContent').is(':visible')){
+                    setTimeout(function(){
+                        $('#playlistContent').hide();
+                        $('#togglePlaylist').show();
+                    }, 30000)
+                }
             });
             
             $('#next').on('click',function(){
