@@ -465,6 +465,12 @@ $(function() {
     }();
 
 
+    Mousetrap.bind('x', function() { player.play(); });
+    Mousetrap.bind('b', function() { player.nextPlay(); });
+    Mousetrap.bind('a d d', function() { vki.addItemToVk(player.getCurrentItem()); });
+
+
+
     var images = ['/includes/images/1.jpg'];
 
     var selectRandomImageAndSetBackground = function(){
