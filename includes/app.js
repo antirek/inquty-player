@@ -497,10 +497,9 @@ $(function() {
                 images.push(result.hits[i].webformatURL);
             }
 
-            selectRandomImageAndSetBackground();
             setInterval(selectRandomImageAndSetBackground, parseInt(settings['intervalForBackgroundChange'])*1000);
-        },      
-        error: function(xhr, status, error){
+        }, 
+        complete: function(){
             selectRandomImageAndSetBackground();
         }
     });
