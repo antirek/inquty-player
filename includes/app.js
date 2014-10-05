@@ -201,21 +201,23 @@ var Player = function(){
         audioLoad(item);
     }
 
+    var openPlaylist = function(){
+        $('#togglePlaylist').hide();
+        $('#playlistContent').show();
+
+        if($('#playlistContent').is(':visible')){
+            setTimeout(function(){
+                $('#playlistContent').hide();
+                $('#togglePlaylist').show();
+            }, 30000)
+        }
+    };
+
     var init = function() {
         
         var bindButtons = function(){
             
-            $('#togglePlaylist').on('click',function(){
-                $('#togglePlaylist').hide();
-                $('#playlistContent').show();
-
-                if($('#playlistContent').is(':visible')){
-                    setTimeout(function(){
-                        $('#playlistContent').hide();
-                        $('#togglePlaylist').show();
-                    }, 30000)
-                }
-            });
+            $('#togglePlaylist').on('click', openPlaylist);
             
             $('#next').on('click',function(){
                 nextPlay();
@@ -240,6 +242,7 @@ var Player = function(){
         getCurrentItem: playlist.getCurrentItem,
         play: play,
         load: load,
+        openPlaylist: openPlaylist
     }
 }
 
@@ -465,10 +468,10 @@ $(function() {
     }();
 
 
-    Mousetrap.bind('x', function() { player.play(); });
-    Mousetrap.bind('b', function() { player.nextPlay(); });
-    Mousetrap.bind('a d d', function() { vki.addItemToVk(player.getCurrentItem()); });
-
+    Mousetrap.bind('x', player.play);
+    Mousetrap.bind('b', player.nextPlay);
+    Mousetrap.bind('a d', function() { vki.addItemToVk(player.getCurrentItem()); });
+    Mousetrap.bind('p', player.openPlaylist);
 
 
     var images = ['/includes/images/1.jpg'];
