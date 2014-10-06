@@ -201,14 +201,12 @@ var Player = function(){
         audioLoad(item);
     }
 
-    var openPlaylist = function(){
-        $('#togglePlaylist').hide();
-        $('#playlistContent').show();
-
+    var openPlaylist = function(){        
+        $('#playlistContent').toggle();
+        
         if($('#playlistContent').is(':visible')){
             setTimeout(function(){
-                $('#playlistContent').hide();
-                $('#togglePlaylist').show();
+                $('#playlistContent').hide();                
             }, 30000)
         }
     };

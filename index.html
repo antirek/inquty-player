@@ -19,24 +19,35 @@
     </head>
 
     <body>
-        
         <div class="container">
-            <div class="row" style="min-height:10px;">
-                
-            </div>
-            <div class="row">
-                <div class="col-md-8">
-                    <a href="#" id="togglePlaylist" class="btn btn-default">
-                        Playlist
-                    </a> 
-                </div>                
-                <div class="col-md-4">
-                    <div id="login_button" onclick="VK.Auth.login(authInfo, 8);"></div>        
-                    <div id="userinfo"></div>
-                </div>
-                
-            </div>
 
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="container-fluid">
+                    
+                    <div class="navbar-header">                  
+                        <a class="navbar-brand" href="#">Inquty.ru</a>
+                    </div>
+                    
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li class="active">
+                                <a href="#" id="togglePlaylist" class="btn btn-default">
+                                    Playlist
+                                </a>
+                            </li>
+                        </ul>
+                          
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <div id="login_button" onclick="VK.Auth.login(authInfo, 8);"></div>
+                                <a href="#"><div id="userinfo"></div></a>
+                            </li>
+                        </ul>
+                    </div>
+                  </div>
+            </nav>
+            
+            
             <div class="row" style="min-height:320px;">
                 <div class="col-md-12">
                     
