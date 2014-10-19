@@ -201,12 +201,12 @@ var Player = function(){
         audioLoad(item);
     }
 
-    var openPlaylist = function(){        
+    var openPlaylist = function(){
         $('#playlistContent').toggle();
-        
+
         if($('#playlistContent').is(':visible')){
             setTimeout(function(){
-                $('#playlistContent').hide();                
+                $('#playlistContent').hide();
             }, 30000)
         }
     };
@@ -257,10 +257,12 @@ var vk = function(){
         VK.Auth.getLoginStatus(authInfo);
         VK.UI.button('login_button');
 
+        VK.Observer.subscribe("auth.login", authInfo);
+
         function authInfo(response) {
             if (response.session) {
+                userid = response.session.mid;
                 $('#login_button').hide();
-                userid = response.session.mid;           
                 loadProfile(userid);
             } else {
                 $('#login_button').show();
@@ -283,6 +285,10 @@ var vk = function(){
             $('#userinfo').html(user.last_name + " " + user.first_name);
             callback();
         }
+
+        return {
+            authInfo: authInfo
+        };
     };
 
     var getRecommendationsPlaylist = function(callback) {
@@ -360,6 +366,7 @@ var vk = function(){
     }
 
     return {
+        authInfo: auth.authInfo,
         auth: auth,
         loadPlaylist: loadPlaylist,
         addItemToVk: addItemToVk,
@@ -370,6 +377,8 @@ var vk = function(){
 $(function() {
     
     var vki = vk();
+    
+    authInfo = vki.authInfo;
     var player = Player();
 
     var settings = {
