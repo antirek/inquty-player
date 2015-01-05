@@ -495,9 +495,11 @@ $(function() {
         });
     }
 
+    var p = new Pixabay({key:'d1f0c1d17171d78cd832', username: 'antirek'});
+
     $.ajax({
-        url: "http://pixabay.com/api/?username=antirek&key=d1f0c1d17171d78cd832&search_term=sky&image_type=photo&orientation=horizontal&per_page=50",
-        success: function(result, status, xhr){
+        url: p.getUrl('sky'),
+        success: function (result, status, xhr) {
             images = [];
 
             for(var i = 0; i < result.hits.length; i++){
