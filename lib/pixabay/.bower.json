@@ -1,0 +1,38 @@
+{
+  "name": "pixabay",
+  "homepage": "https://github.com/antirek/pixabay",
+  "authors": [
+    "Sergey Dmitriev <serge.dmitriev@gmail.com>"
+  ],
+  "description": "Pixabay.com API wrapper",
+  "main": "index.js",
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "pixabay",
+    "pixabay.com",
+    "api",
+    "images"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "zeptojs": "~1.1.6"
+  },
+  "_release": "e74e82007c",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "e74e82007c210e99e01bae5120fe218e7e2cc2e6"
+  },
+  "_source": "git://github.com/antirek/pixabay.git",
+  "_target": "*",
+  "_originalSource": "pixabay"
+}
